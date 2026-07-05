@@ -216,6 +216,11 @@ export function PatientDataProvider({ children }: { children: ReactNode }) {
     setLocationHeading("Returning to Living Room");
     setIsLocationMoving(true);
     setMotion("Walking");
+    setAlerts((prev) =>
+      prev.map((a) =>
+        a.event === "Wandering" && a.status === "Active" ? { ...a, status: "Resolved" } : a
+      )
+    );
   }, []);
 
   const resolveAlert = useCallback((id: string) => {

@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { AlertTriangle, MapPinned, PhoneCall, PhoneOutgoing } from "lucide-react";
+import { AlertTriangle, MapPinned, PhoneCall, PhoneOutgoing, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { GlassCard, CardHeader } from "@/components/ui/GlassCard";
 import { usePatientData } from "@/context/PatientDataContext";
@@ -90,14 +90,19 @@ export function WanderingAlertCard() {
                 <PhoneCall className="h-4 w-4" />
                 Call Patient
               </button>
-              <button
-                onClick={dismissWandering}
-                className="flex-1 min-w-[120px] flex items-center justify-center gap-2 rounded-xl bg-danger text-white font-bold py-2.5 text-sm hover:bg-danger-dark transition-colors"
-              >
+              <button className="flex-1 min-w-[120px] flex items-center justify-center gap-2 rounded-xl bg-white text-ink-600 font-bold py-2.5 text-sm border border-ink-200 hover:bg-ink-50 transition-colors">
                 <PhoneOutgoing className="h-4 w-4" />
                 Notify Caregiver
               </button>
             </div>
+
+            <button
+              onClick={dismissWandering}
+              className="mt-3 w-full flex items-center justify-center gap-2 rounded-xl bg-white text-ink-600 font-bold py-3 text-sm border border-ink-200 hover:bg-ink-50 transition-colors"
+            >
+              <X className="h-4 w-4" />
+              Dismiss Alert
+            </button>
           </motion.div>
         )}
       </AnimatePresence>

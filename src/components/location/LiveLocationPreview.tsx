@@ -1,4 +1,4 @@
-import { Activity, MapPin, Radio, Route } from "lucide-react";
+import { Activity, MapPin, Radio, Route, X } from "lucide-react";
 import { GlassCard, CardHeader } from "@/components/ui/GlassCard";
 import { StatusBadge, statusToTone } from "@/components/ui/StatusBadge";
 import { usePatientData } from "@/context/PatientDataContext";
@@ -14,6 +14,8 @@ export function LiveLocationPreview() {
     motion: motionState,
     rssi,
     patient,
+    wanderingAlert,
+    dismissWandering,
   } = usePatientData();
 
   return (
@@ -46,12 +48,35 @@ export function LiveLocationPreview() {
       </div>
 
       {locationHeading && isLocationMoving && (
-        <div className="rounded-2xl bg-brand-500/8 border border-brand-500/15 px-4 py-3 mb-4 flex items-center gap-3">
-          <Activity className="h-5 w-5 text-brand-600 animate-pulse" />
-          <div>
-            <p className="text-xs font-semibold text-brand-600 uppercase tracking-wide">In transit</p>
+        <div
+          className={`rounded-2xl px-4 py-3 mb-4 flex items-center gap-3 ${
+            wanderingAlert
+              ? "bg-danger/10 border border-danger/30"
+              : "bg-brand-500/8 border border-brand-500/15"
+          }`}
+        >
+          <Activity
+            className={`h-5 w-5 animate-pulse ${wanderingAlert ? "text-danger" : "text-brand-600"}`}
+          />
+          <div className="flex-1 min-w-0">
+            <p
+              className={`text-xs font-semibold uppercase tracking-wide ${
+                wanderingAlert ? "text-danger" : "text-brand-600"
+              }`}
+            >
+              {wanderingAlert ? "Wandering alert active" : "In transit"}
+            </p>
             <p className="text-sm font-bold text-ink-800">{locationHeading}</p>
           </div>
+          {wanderingAlert && (
+            <button
+              onClick={dismissWandering}
+              className="shrink-0 flex items-center gap-1.5 rounded-xl bg-white text-ink-600 font-bold px-3 py-2 text-xs border border-ink-200 hover:bg-ink-50 transition-colors"
+            >
+              <X className="h-3.5 w-3.5" />
+              Dismiss
+            </button>
+          )}
         </div>
       )}
 

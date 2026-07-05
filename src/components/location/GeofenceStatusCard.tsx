@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { DoorOpen, Home, ShieldAlert } from "lucide-react";
+import { DoorOpen, Home, ShieldAlert, X } from "lucide-react";
 import { GlassCard, CardHeader } from "@/components/ui/GlassCard";
 import { usePatientData } from "@/context/PatientDataContext";
 import type { GeofenceState } from "@/types";
@@ -26,12 +26,12 @@ const META: Record<GeofenceState, { icon: typeof Home; grad: string; text: strin
 };
 
 export function GeofenceStatusCard() {
-  const { geofence } = usePatientData();
+  const { geofence, wanderingAlert, dismissWandering } = usePatientData();
   const meta = META[geofence];
   const Icon = meta.icon;
 
   return (
-    <GlassCard className="p-6" glow={geofence === "Outside Home" ? "danger" : "none"}>
+    <GlassCard className="p-6" glow={geofence === "Outside Home" ? "danger" : wanderingAlert ? "danger" : "none"}>
       <CardHeader icon={<ShieldAlert className="h-5 w-5" />} title="Geofence Status" subtitle="Virtual home perimeter" />
 
       <motion.div
@@ -48,6 +48,16 @@ export function GeofenceStatusCard() {
           <p className="text-xs text-ink-400 mt-0.5">{meta.desc}</p>
         </div>
       </motion.div>
+
+      {wanderingAlert && (
+        <button
+          onClick={dismissWandering}
+          className="mt-4 w-full flex items-center justify-center gap-2 rounded-xl bg-white text-ink-600 font-bold py-2.5 text-sm border border-ink-200 hover:bg-ink-50 transition-colors"
+        >
+          <X className="h-4 w-4" />
+          Dismiss Alert
+        </button>
+      )}
     </GlassCard>
   );
 }
