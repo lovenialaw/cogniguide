@@ -55,12 +55,30 @@ npm run preview
 The site is published at **[https://lovenialaw.github.io/cogniguide/](https://lovenialaw.github.io/cogniguide/)**.
 
 1. In the GitHub repo, go to **Settings → Pages**
-2. Under **Build and deployment**, set **Source** to **GitHub Actions**
+2. Under **Build and deployment → Source**, choose **GitHub Actions** (NOT “Deploy from a branch”)
 3. Push to `main` — the workflow in `.github/workflows/deploy.yml` builds `dist/` and deploys automatically
 
 **Dashboard URL:** `https://lovenialaw.github.io/cogniguide/#/`
 
 Do not deploy the raw source folder. GitHub Pages must serve the built output from `npm run build`, not `/src/main.tsx`.
+
+#### If deploy suddenly fails or the site goes blank
+
+This usually means **Pages source was switched to “Deploy from a branch”**, which conflicts with the GitHub Actions workflow.
+
+| Symptom | Cause |
+|---------|--------|
+| Red ❌ “pages build and deployment” failed | Branch deploy fighting with Actions deploy |
+| Blank page / `main.tsx` 404 | Raw source deployed instead of `dist/` |
+| Site returns 404 | Last deploy failed; nothing live |
+
+**Fix:**
+
+1. **Settings → Pages → Source → GitHub Actions**
+2. Open **Actions** tab → **Deploy to GitHub Pages** → **Run workflow**
+3. Wait ~1 minute, then open `https://lovenialaw.github.io/cogniguide/#/`
+
+Use only **“Deploy to GitHub Pages”** (our workflow). Ignore or disable branch-based Pages deploy.
 
 ## Project Structure
 
