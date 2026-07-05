@@ -64,21 +64,26 @@ Do not deploy the raw source folder. GitHub Pages must serve the built output fr
 
 #### If deploy suddenly fails or the site goes blank
 
-This usually means **Pages source was switched to “Deploy from a branch”**, which conflicts with the GitHub Actions workflow.
+This usually means **Pages source was set to deploy from the `main` branch**, which publishes raw source code instead of the built app.
 
 | Symptom | Cause |
 |---------|--------|
-| Red ❌ “pages build and deployment” failed | Branch deploy fighting with Actions deploy |
+| Home works but other pages are blank | Browser cached old JS; lazy-loaded chunk files 404 |
+| Red ❌ “pages build and deployment” | `main` branch deploy fighting with the build workflow |
 | Blank page / `main.tsx` 404 | Raw source deployed instead of `dist/` |
-| Site returns 404 | Last deploy failed; nothing live |
+| `/assets/*.js` 404 in console | Built files not on the server |
 
-**Fix:**
+**Fix (pick one source — do not use `main`):**
 
-1. **Settings → Pages → Source → GitHub Actions**
-2. Open **Actions** tab → **Deploy to GitHub Pages** → **Run workflow**
-3. Wait ~1 minute, then open `https://lovenialaw.github.io/cogniguide/#/`
+**Option A — GitHub Actions (recommended)**  
+1. **Settings → Pages → Source → GitHub Actions**  
+2. **Actions → Deploy to GitHub Pages → Run workflow**
 
-Use only **“Deploy to GitHub Pages”** (our workflow). Ignore or disable branch-based Pages deploy.
+**Option B — Deploy from branch**  
+1. **Settings → Pages → Source → Deploy from a branch**  
+2. Branch: **`gh-pages`**, folder: **`/ (root)`** — NOT `main`
+
+Then hard-refresh (`Ctrl+Shift+R`) and open: `https://lovenialaw.github.io/cogniguide/#/`
 
 ## Project Structure
 
