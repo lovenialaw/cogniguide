@@ -3,9 +3,11 @@ import { AlertTriangle, MapPinned, PhoneCall, PhoneOutgoing, X } from "lucide-re
 import { useNavigate } from "react-router-dom";
 import { GlassCard, CardHeader } from "@/components/ui/GlassCard";
 import { usePatientData } from "@/context/PatientDataContext";
+import { useCareActions } from "@/hooks/useCareActions";
 
 export function WanderingAlertCard() {
   const { wanderingAlert, simulateWandering, dismissWandering } = usePatientData();
+  const { callPatient, notifyCaregiverOfAlert } = useCareActions();
   const navigate = useNavigate();
 
   return (
@@ -80,17 +82,32 @@ export function WanderingAlertCard() {
 
             <div className="flex flex-wrap gap-3">
               <button
+                onClick={() => navigate("/emergency")}
+                className="flex-1 min-w-[120px] flex items-center justify-center gap-2 rounded-xl bg-danger text-white font-bold py-2.5 text-sm shadow-glow-danger hover:bg-danger-dark transition-colors"
+              >
+                <PhoneCall className="h-4 w-4" />
+                Emergency
+              </button>
+              <button
                 onClick={() => navigate("/location")}
                 className="flex-1 min-w-[120px] flex items-center justify-center gap-2 rounded-xl bg-ink-800 text-white font-bold py-2.5 text-sm hover:bg-ink-900 transition-colors"
               >
                 <MapPinned className="h-4 w-4" />
                 View Map
               </button>
-              <button className="flex-1 min-w-[120px] flex items-center justify-center gap-2 rounded-xl bg-brand-500 text-white font-bold py-2.5 text-sm hover:bg-brand-600 transition-colors">
+              <button
+                type="button"
+                onClick={callPatient}
+                className="flex-1 min-w-[120px] flex items-center justify-center gap-2 rounded-xl bg-brand-500 text-white font-bold py-2.5 text-sm hover:bg-brand-600 transition-colors"
+              >
                 <PhoneCall className="h-4 w-4" />
                 Call Patient
               </button>
-              <button className="flex-1 min-w-[120px] flex items-center justify-center gap-2 rounded-xl bg-white text-ink-600 font-bold py-2.5 text-sm border border-ink-200 hover:bg-ink-50 transition-colors">
+              <button
+                type="button"
+                onClick={notifyCaregiverOfAlert}
+                className="flex-1 min-w-[120px] flex items-center justify-center gap-2 rounded-xl bg-white text-ink-600 font-bold py-2.5 text-sm border border-ink-200 hover:bg-ink-50 transition-colors"
+              >
                 <PhoneOutgoing className="h-4 w-4" />
                 Notify Caregiver
               </button>

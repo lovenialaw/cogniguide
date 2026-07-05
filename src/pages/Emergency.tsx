@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import {
   AlertTriangle,
+  BrainCircuit,
   HeartPulse,
   MapPin,
   Navigation,
@@ -9,37 +10,53 @@ import {
   ShieldCheck,
   Siren,
   Clock,
+  Waypoints,
 } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { usePatientData } from "@/context/PatientDataContext";
+import { useCareActions } from "@/hooks/useCareActions";
 import { formatClock } from "@/lib/utils";
 
 export default function Emergency() {
-  const { patient, room, heartRate, fallDetected, fallEvent, endEmergency } = usePatientData();
+  const {
+    patient,
+    room,
+    heartRate,
+    geofence,
+    fallDetected,
+    fallEvent,
+    wanderingAlert,
+    endEmergency,
+  } = usePatientData();
+  const { callPatient, callCaregiver, callEmergencyServices, openMaps } = useCareActions();
+
+  const hasActiveEmergency = fallDetected || !!wanderingAlert;
 
   const actions = [
-    { label: "Call Patient", icon: Phone, tone: "bg-brand-500 hover:bg-brand-600" },
-    { label: "Call Caregiver", icon: PhoneCall, tone: "bg-mint-500 hover:bg-mint-600" },
-    { label: "Call Emergency Services", icon: Siren, tone: "bg-danger hover:bg-danger-dark" },
+    { label: "Call Patient", icon: Phone, tone: "bg-brand-500 hover:bg-brand-600", onClick: callPatient },
+    { label: "Call Caregiver", icon: PhoneCall, tone: "bg-mint-500 hover:bg-mint-600", onClick: callCaregiver },
     {
-      label: "Open Google Maps",
-      icon: Navigation,
-      tone: "bg-ink-800 hover:bg-ink-900",
-      onClick: () =>
-        window.open(
-          `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(room === "Outside Home" ? "Patient last known location" : "Home")}`,
-          "_blank"
-        ),
+      label: "Call Emergency Services",
+      icon: Siren,
+      tone: "bg-danger hover:bg-danger-dark",
+      onClick: callEmergencyServices,
     },
+    { label: "Open Google Maps", icon: Navigation, tone: "bg-ink-800 hover:bg-ink-900", onClick: openMaps },
   ];
+
+  const eventTime = fallDetected ? fallEvent?.time : wanderingAlert?.time;
 
   return (
     <div className="flex flex-col gap-5">
-      {fallDetected ? (
+      {hasActiveEmergency ? (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-3xl bg-gradient-to-r from-danger to-danger-dark text-white p-6 sm:p-8 shadow-glow-danger relative overflow-hidden"
+          className={`rounded-3xl text-white p-6 sm:p-8 shadow-glow-danger relative overflow-hidden ${
+            fallDetected
+              ? "bg-gradient-to-r from-danger to-danger-dark"
+              : "bg-gradient-to-r from-amber-glow to-amber-600"
+          }`}
         >
           <motion.div
             animate={{ opacity: [0.4, 0.15, 0.4] }}
@@ -53,16 +70,26 @@ export default function Emergency() {
                 transition={{ repeat: Infinity, duration: 0.85 }}
                 className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20 backdrop-blur"
               >
-                <AlertTriangle className="h-8 w-8" />
+                {fallDetected ? (
+                  <AlertTriangle className="h-8 w-8" />
+                ) : (
+                  <Waypoints className="h-8 w-8" />
+                )}
               </motion.div>
               <div>
-                <p className="font-display font-extrabold text-2xl sm:text-3xl tracking-tight">Active Emergency</p>
-                <p className="text-white/80 text-sm mt-1">Fall detected — immediate response required</p>
+                <p className="font-display font-extrabold text-2xl sm:text-3xl tracking-tight">
+                  Active Emergency
+                </p>
+                <p className="text-white/80 text-sm mt-1">
+                  {fallDetected
+                    ? "Fall detected — immediate response required"
+                    : "Possible wandering detected — patient leaving safe zone"}
+                </p>
               </div>
             </div>
             <button
               onClick={endEmergency}
-              className="rounded-2xl bg-white text-danger-dark font-bold px-5 py-3 text-sm hover:bg-white/90 transition-colors whitespace-nowrap"
+              className="rounded-2xl bg-white text-ink-900 font-bold px-5 py-3 text-sm hover:bg-white/90 transition-colors whitespace-nowrap"
             >
               Mark as Resolved
             </button>
@@ -75,25 +102,46 @@ export default function Emergency() {
           </div>
           <div>
             <p className="font-display font-extrabold text-xl text-ink-900">No Active Emergency</p>
-            <p className="text-sm text-ink-400">All systems normal. This panel activates automatically when a fall or critical event is detected.</p>
+            <p className="text-sm text-ink-400">
+              All systems normal. This panel activates automatically when a fall, wandering event, or
+              other critical alert is detected.
+            </p>
           </div>
         </GlassCard>
       )}
 
       <GlassCard className="p-6 sm:p-8">
-        <p className="text-xs font-bold uppercase tracking-widest text-ink-400 mb-5">Current Emergency Snapshot</p>
+        <p className="text-xs font-bold uppercase tracking-widest text-ink-400 mb-5">
+          Current Emergency Snapshot
+        </p>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <InfoTile icon={<ShieldCheck className="h-5 w-5" />} label="Patient Name" value={patient.name} />
           <InfoTile icon={<MapPin className="h-5 w-5" />} label="Last Seen Location" value={room} />
           <InfoTile icon={<HeartPulse className="h-5 w-5" />} label="Current Heart Rate" value={`${heartRate} BPM`} />
-          <InfoTile icon={<Clock className="h-5 w-5" />} label="Time" value={fallEvent?.time ?? formatClock(new Date())} />
+          <InfoTile icon={<Clock className="h-5 w-5" />} label="Event Time" value={eventTime ?? formatClock(new Date())} />
         </div>
 
         {fallDetected && (
           <div className="rounded-2xl bg-danger/10 border border-danger/25 px-5 py-4 mb-6 flex items-center gap-3">
             <AlertTriangle className="h-5 w-5 text-danger-dark shrink-0" />
-            <p className="text-sm font-bold text-danger-dark">Fall Severity: {fallEvent?.severity ?? "High"}</p>
+            <p className="text-sm font-bold text-danger-dark">
+              Fall Severity: {fallEvent?.severity ?? "High"}
+            </p>
+          </div>
+        )}
+
+        {wanderingAlert && (
+          <div className="rounded-2xl bg-amber-glow/10 border border-amber-glow/30 px-5 py-4 mb-6">
+            <div className="flex items-center gap-3 mb-3">
+              <Waypoints className="h-5 w-5 text-amber-700 shrink-0" />
+              <p className="text-sm font-bold text-amber-800">Wandering Alert Active</p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <SnapshotDetail icon={<BrainCircuit className="h-4 w-4" />} label="AI Confidence" value={`${wanderingAlert.confidence}%`} />
+              <SnapshotDetail icon={<Clock className="h-4 w-4" />} label="Duration Away" value={`${wanderingAlert.durationMinutes} min`} />
+              <SnapshotDetail icon={<MapPin className="h-4 w-4" />} label="Geofence" value={geofence} />
+            </div>
           </div>
         )}
 
@@ -120,6 +168,26 @@ function InfoTile({ icon, label, value }: { icon: React.ReactNode; label: string
       <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-brand-600 mb-3">{icon}</div>
       <p className="text-[11px] text-ink-400 uppercase tracking-wide font-medium">{label}</p>
       <p className="text-sm font-bold text-ink-800 mt-1 truncate">{value}</p>
+    </div>
+  );
+}
+
+function SnapshotDetail({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="rounded-xl bg-white/70 px-3 py-3">
+      <div className="flex items-center gap-1.5 text-amber-700 mb-1">
+        {icon}
+        <span className="text-[10px] font-semibold uppercase tracking-wide">{label}</span>
+      </div>
+      <p className="text-sm font-bold text-ink-800">{value}</p>
     </div>
   );
 }

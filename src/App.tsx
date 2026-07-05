@@ -1,4 +1,5 @@
 import { HashRouter, Route, Routes } from "react-router-dom";
+import { ToastProvider } from "@/context/ToastContext";
 import { PatientDataProvider } from "@/context/PatientDataContext";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import DashboardHome from "@/pages/DashboardHome";
@@ -12,8 +13,9 @@ import Settings from "@/pages/Settings";
 
 function App() {
   return (
-    <PatientDataProvider>
-      <HashRouter>
+    <ToastProvider>
+      <PatientDataProvider>
+        <HashRouter>
         <Routes>
           <Route element={<DashboardLayout />}>
             <Route path="/" element={<DashboardHome />} />
@@ -26,8 +28,9 @@ function App() {
             <Route path="/settings" element={<Settings />} />
           </Route>
         </Routes>
-      </HashRouter>
-    </PatientDataProvider>
+        </HashRouter>
+      </PatientDataProvider>
+    </ToastProvider>
   );
 }
 

@@ -186,6 +186,8 @@ export function PatientDataProvider({ children }: { children: ReactNode }) {
     const time = nowTime();
     setGeofence("Near Exit");
     setWanderingAlert({ time, confidence: 96, durationMinutes: 12 });
+    setStatus("Emergency");
+    setEmergencyActive(true);
     destinationRef.current = "Outside Home";
     pathRef.current = buildPath(positionRef.current, "Outside Home", roomFromPosition(positionRef.current));
     pathIndexRef.current = 0;
@@ -209,6 +211,8 @@ export function PatientDataProvider({ children }: { children: ReactNode }) {
   const dismissWandering = useCallback(() => {
     setWanderingAlert(null);
     setGeofence("Inside Home");
+    setEmergencyActive(false);
+    setStatus("Safe at Home");
     destinationRef.current = "Living Room";
     pathRef.current = buildPath(positionRef.current, "Living Room", "Outside Home");
     pathIndexRef.current = 0;
@@ -228,12 +232,14 @@ export function PatientDataProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const endEmergency = useCallback(() => {
-    dismissFall();
-  }, [dismissFall]);
+    if (fallDetected) dismissFall();
+    if (wanderingAlert) dismissWandering();
+    setEmergencyActive(false);
+  }, [fallDetected, wanderingAlert, dismissFall, dismissWandering]);
 
   useEffect(() => {
-    if (fallDetected) setEmergencyActive(true);
-  }, [fallDetected]);
+    if (fallDetected || wanderingAlert) setEmergencyActive(true);
+  }, [fallDetected, wanderingAlert]);
 
   // Heart rate + vitals tick
   useEffect(() => {

@@ -4,8 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { GlassCard, CardHeader } from "@/components/ui/GlassCard";
 import { usePatientData } from "@/context/PatientDataContext";
 
+import { useCareActions } from "@/hooks/useCareActions";
+
 export function FallDetectionCard() {
   const { motion: motionState, motionConfidence, fallDetected, fallEvent, simulateFall, dismissFall } = usePatientData();
+  const { callPatient } = useCareActions();
   const navigate = useNavigate();
 
   return (
@@ -89,6 +92,14 @@ export function FallDetectionCard() {
               >
                 <PhoneCall className="h-4 w-4" />
                 Emergency
+              </button>
+              <button
+                type="button"
+                onClick={callPatient}
+                className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-brand-500 text-white font-bold py-3 text-sm hover:bg-brand-600 transition-colors"
+              >
+                <PhoneCall className="h-4 w-4" />
+                Call Patient
               </button>
               <button
                 onClick={dismissFall}
