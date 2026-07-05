@@ -50,6 +50,18 @@ npm run build
 npm run preview
 ```
 
+### Deploy to GitHub Pages
+
+The site is published at **[https://lovenialaw.github.io/cogniguide/](https://lovenialaw.github.io/cogniguide/)**.
+
+1. In the GitHub repo, go to **Settings → Pages**
+2. Under **Build and deployment**, set **Source** to **GitHub Actions**
+3. Push to `main` — the workflow in `.github/workflows/deploy.yml` builds `dist/` and deploys automatically
+
+**Dashboard URL:** `https://lovenialaw.github.io/cogniguide/#/`
+
+Do not deploy the raw source folder. GitHub Pages must serve the built output from `npm run build`, not `/src/main.tsx`.
+
 ## Project Structure
 
 ```
