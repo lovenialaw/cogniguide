@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>COGNIGUIDE | Redirecting…</title>
+    <script>
+      // HashRouter SPA fallback for GitHub Pages direct URL access
+      sessionStorage.setItem("gh-pages-redirect", "1");
+      location.replace(
+        location.origin + location.pathname.replace(/\/[^/]*$/, "/") + "#" + location.pathname.replace(/^.*\/cogniguide\/?/, "/") + location.search
+      );
+    </script>
+  </head>
+  <body></body>
+</html>

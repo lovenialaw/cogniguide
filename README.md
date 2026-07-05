@@ -54,36 +54,36 @@ npm run preview
 
 The site is published at **[https://lovenialaw.github.io/cogniguide/](https://lovenialaw.github.io/cogniguide/)**.
 
-1. In the GitHub repo, go to **Settings → Pages**
-2. Under **Build and deployment → Source**, choose **GitHub Actions** (NOT “Deploy from a branch”)
-3. Push to `main` — the workflow in `.github/workflows/deploy.yml` builds `dist/` and deploys automatically
-
 **Dashboard URL:** `https://lovenialaw.github.io/cogniguide/#/`
 
-Do not deploy the raw source folder. GitHub Pages must serve the built output from `npm run build`, not `/src/main.tsx`.
+Every push to `main` runs `.github/workflows/deploy.yml`, which builds the app and publishes it three ways (Actions artifact, `gh-pages` branch, and `docs/` folder).
 
-#### If deploy suddenly fails or the site goes blank
+#### ⚠️ Blank page / `main.tsx` 404?
 
-This usually means **Pages source was set to deploy from the `main` branch**, which publishes raw source code instead of the built app.
+Your GitHub Pages source is almost certainly set to **`main` branch / root (`/`)**, which publishes raw source code. You will see a white screen and `Failed to load resource: main.tsx 404` in the console.
 
-| Symptom | Cause |
-|---------|--------|
-| Home works but other pages are blank | Browser cached old JS; lazy-loaded chunk files 404 |
-| Red ❌ “pages build and deployment” | `main` branch deploy fighting with the build workflow |
-| Blank page / `main.tsx` 404 | Raw source deployed instead of `dist/` |
-| `/assets/*.js` 404 in console | Built files not on the server |
+**Fix this once in GitHub (takes 30 seconds):**
 
-**Fix (pick one source — do not use `main`):**
+1. Open **[Settings → Pages](https://github.com/lovenialaw/cogniguide/settings/pages)**
+2. Under **Build and deployment → Source**, pick **one** option below:
 
-**Option A — GitHub Actions (recommended)**  
-1. **Settings → Pages → Source → GitHub Actions**  
-2. **Actions → Deploy to GitHub Pages → Run workflow**
+| Source setting | Value |
+|----------------|--------|
+| **GitHub Actions** *(recommended)* | Select **GitHub Actions** |
+| **Deploy from a branch** | Branch: **`gh-pages`**, folder: **`/ (root)`** |
+| **Deploy from a branch** *(alternate)* | Branch: **`main`**, folder: **`/docs`** — NOT `/` |
 
-**Option B — Deploy from branch**  
-1. **Settings → Pages → Source → Deploy from a branch**  
-2. Branch: **`gh-pages`**, folder: **`/ (root)`** — NOT `main`
+3. Wait ~1 minute, then hard-refresh: **Ctrl + Shift + R**
+4. Open `https://lovenialaw.github.io/cogniguide/#/`
 
-Then hard-refresh (`Ctrl+Shift+R`) and open: `https://lovenialaw.github.io/cogniguide/#/`
+**Never** use `main` branch with folder **`/ (root)`** — that serves `/src/main.tsx` and the app cannot load.
+
+#### Verify it worked
+
+In DevTools → Network, you should see:
+
+- ✅ `/cogniguide/assets/index-xxxxx.js`
+- ❌ NOT `/src/main.tsx`
 
 ## Project Structure
 
