@@ -11,6 +11,13 @@ import {
   stepToward,
   type PatientPosition,
 } from "@/lib/locationSimulation";
+import {
+  computeLiveNodes,
+  DEFAULT_WIFI_NODES,
+  verifyFallConsensus,
+  verifyWanderingConsensus,
+  type DualVerifyStatus,
+} from "@/lib/wifiNodes";
 import { clamp, randomWalk } from "@/lib/utils";
 import type {
   ActivitySummary,
@@ -67,7 +74,12 @@ interface PatientDataState {
   wanderingAlert: WanderingEvent | null;
   alerts: AlertRecord[];
   aiConfidence: { fallDetection: number; wandering: number };
+  /** True only after smartwatch + ESP32 home nodes both confirm */
   emergencyActive: boolean;
+  fallVerifyStatus: DualVerifyStatus;
+  wanderVerifyStatus: DualVerifyStatus;
+  /** Either fall or wandering has dual sensor consensus */
+  dualVerified: boolean;
 }
 
 interface PatientDataContextValue extends PatientDataState {
@@ -158,7 +170,7 @@ export function PatientDataProvider({ children }: { children: ReactNode }) {
     const time = nowTime();
     setFallDetected(true);
     setFallEvent({ severity: "High", time });
-    setStatus("Emergency");
+    // Watch-only until ESP32 nodes confirm stillness — no caregiver emergency yet
     setMotion("Fall Detected");
     setMotionConfidence(99);
     setAlerts((prev) => [
@@ -186,13 +198,12 @@ export function PatientDataProvider({ children }: { children: ReactNode }) {
     const time = nowTime();
     setGeofence("Near Exit");
     setWanderingAlert({ time, confidence: 96, durationMinutes: 12 });
-    setStatus("Emergency");
-    setEmergencyActive(true);
+    // Watch/geofence only until ESP32 RSSI confirms — no caregiver emergency yet
     destinationRef.current = "Outside Home";
     pathRef.current = buildPath(positionRef.current, "Outside Home", roomFromPosition(positionRef.current));
     pathIndexRef.current = 0;
     pauseUntilRef.current = 0;
-    setLocationHeading("Moving toward exit — possible wandering");
+    setLocationHeading("Moving toward exit — awaiting home sensor confirm");
     setIsLocationMoving(true);
     setMotion("Walking");
     setAlerts((prev) => [
@@ -237,9 +248,49 @@ export function PatientDataProvider({ children }: { children: ReactNode }) {
     setEmergencyActive(false);
   }, [fallDetected, wanderingAlert, dismissFall, dismissWandering]);
 
+  // Dual verification: smartwatch + four ESP32 home nodes must agree
+  const homeNodes = useMemo(
+    () => computeLiveNodes(DEFAULT_WIFI_NODES, patientPosition, isLocationMoving),
+    [patientPosition, isLocationMoving]
+  );
+
+  const fallVerifyStatus = useMemo(
+    () =>
+      verifyFallConsensus({
+        fallDetected,
+        isMoving: isLocationMoving,
+        nodes: homeNodes,
+      }),
+    [fallDetected, isLocationMoving, homeNodes]
+  );
+
+  const wanderVerifyStatus = useMemo(
+    () =>
+      verifyWanderingConsensus({
+        wanderingAlert: !!wanderingAlert,
+        geofence,
+        room,
+        nodes: homeNodes,
+        patientPos: patientPosition,
+      }),
+    [wanderingAlert, geofence, room, homeNodes, patientPosition]
+  );
+
+  const dualVerified = fallVerifyStatus === "confirmed" || wanderVerifyStatus === "confirmed";
+
+  // Caregiver emergency ONLY after both sensors agree
   useEffect(() => {
-    if (fallDetected || wanderingAlert) setEmergencyActive(true);
-  }, [fallDetected, wanderingAlert]);
+    if (dualVerified) {
+      setEmergencyActive(true);
+      setStatus("Emergency");
+    } else if (!fallDetected && !wanderingAlert) {
+      setEmergencyActive(false);
+    } else {
+      // Watch flagged something, but home nodes have not confirmed yet
+      setEmergencyActive(false);
+      setStatus((prev) => (prev === "Emergency" ? "Walking" : prev));
+    }
+  }, [dualVerified, fallDetected, wanderingAlert]);
 
   // Heart rate + vitals tick
   useEffect(() => {
@@ -447,6 +498,9 @@ export function PatientDataProvider({ children }: { children: ReactNode }) {
       alerts,
       aiConfidence,
       emergencyActive,
+      fallVerifyStatus,
+      wanderVerifyStatus,
+      dualVerified,
       simulateFall,
       dismissFall,
       simulateWandering,
@@ -486,6 +540,9 @@ export function PatientDataProvider({ children }: { children: ReactNode }) {
       alerts,
       aiConfidence,
       emergencyActive,
+      fallVerifyStatus,
+      wanderVerifyStatus,
+      dualVerified,
       simulateFall,
       dismissFall,
       simulateWandering,

@@ -5,7 +5,16 @@ import { useToast } from "@/context/ToastContext";
 
 export function useCareActions() {
   const { showToast } = useToast();
-  const { room, geofence, patient, fallDetected, wanderingAlert } = usePatientData();
+  const {
+    room,
+    geofence,
+    patient,
+    fallDetected,
+    wanderingAlert,
+    dualVerified,
+    fallVerifyStatus,
+    wanderVerifyStatus,
+  } = usePatientData();
 
   const feedback = useCallback((message: string) => showToast(message), [showToast]);
 
@@ -26,13 +35,35 @@ export function useCareActions() {
   }, [room, geofence, feedback]);
 
   const notifyCaregiverOfAlert = useCallback(() => {
+    if ((fallDetected || wanderingAlert) && !dualVerified) {
+      showToast(
+        "Hold: home ESP32 nodes have not confirmed yet — caregiver alert blocked until both sensors agree.",
+        "info"
+      );
+      return;
+    }
+
     let summary = "Status update requested";
-    if (fallDetected) summary = `Fall detected — patient ${patient.name} in ${room}`;
-    else if (wanderingAlert) summary = `Possible wandering — ${patient.name} near ${room} (${geofence})`;
-    else summary = `${patient.name} needs attention — last seen in ${room}`;
+    if (fallVerifyStatus === "confirmed") {
+      summary = `Dual-verified fall — patient ${patient.name} in ${room}`;
+    } else if (wanderVerifyStatus === "confirmed") {
+      summary = `Dual-verified wandering — ${patient.name} near ${room} (${geofence})`;
+    } else {
+      summary = `${patient.name} needs attention — last seen in ${room}`;
+    }
 
     notifyCaregiver(summary, (msg) => showToast(msg, "success"));
-  }, [fallDetected, wanderingAlert, patient.name, room, geofence, showToast]);
+  }, [
+    fallDetected,
+    wanderingAlert,
+    dualVerified,
+    fallVerifyStatus,
+    wanderVerifyStatus,
+    patient.name,
+    room,
+    geofence,
+    showToast,
+  ]);
 
   return {
     callPatient,

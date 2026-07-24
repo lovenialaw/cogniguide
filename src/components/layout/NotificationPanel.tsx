@@ -15,10 +15,12 @@ const SEVERITY_TONE: Record<AlertRecord["severity"], string> = {
 
 export function NotificationPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
   const panelRef = useRef<HTMLDivElement>(null);
-  const { alerts, fallDetected, wanderingAlert } = usePatientData();
+  const { alerts, fallDetected, wanderingAlert, dualVerified, fallVerifyStatus, wanderVerifyStatus } =
+    usePatientData();
   const navigate = useNavigate();
 
   const activeAlerts = alerts.filter((a) => a.status === "Active").slice(0, 8);
+  const watchFlagged = fallDetected || !!wanderingAlert;
 
   useEffect(() => {
     if (!open) return;
@@ -69,23 +71,47 @@ export function NotificationPanel({ open, onClose }: { open: boolean; onClose: (
             )}
           </div>
 
-          {(fallDetected || wanderingAlert) && (
+          {watchFlagged && (
             <div className="px-3 pt-3">
               <button
                 onClick={() => {
                   navigate("/emergency");
                   onClose();
                 }}
-                className="w-full flex items-center gap-3 rounded-xl bg-danger/10 border border-danger/20 px-3 py-3 text-left hover:bg-danger/15 transition-colors"
+                className={cn(
+                  "w-full flex items-center gap-3 rounded-xl border px-3 py-3 text-left transition-colors",
+                  dualVerified
+                    ? "bg-danger/10 border-danger/20 hover:bg-danger/15"
+                    : "bg-amber-glow/10 border-amber-glow/25 hover:bg-amber-glow/15"
+                )}
               >
-                <AlertTriangle className="h-5 w-5 text-danger shrink-0" />
+                <AlertTriangle
+                  className={cn("h-5 w-5 shrink-0", dualVerified ? "text-danger" : "text-amber-700")}
+                />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-danger-dark">
-                    {fallDetected ? "Fall emergency active" : "Wandering alert active"}
+                  <p
+                    className={cn(
+                      "text-sm font-bold",
+                      dualVerified ? "text-danger-dark" : "text-amber-800"
+                    )}
+                  >
+                    {dualVerified
+                      ? fallVerifyStatus === "confirmed"
+                        ? "Dual-verified fall — caregiver alerted"
+                        : "Dual-verified wandering — caregiver alerted"
+                      : fallDetected
+                        ? "Fall pending home sensor confirm"
+                        : "Wandering pending home sensor confirm"}
                   </p>
-                  <p className="text-xs text-ink-500">Tap to open Emergency center</p>
+                  <p className="text-xs text-ink-500">
+                    {dualVerified
+                      ? "Tap to open Emergency center"
+                      : `Awaiting ESP32 agreement (${fallDetected ? fallVerifyStatus : wanderVerifyStatus})`}
+                  </p>
                 </div>
-                <ChevronRight className="h-4 w-4 text-danger shrink-0" />
+                <ChevronRight
+                  className={cn("h-4 w-4 shrink-0", dualVerified ? "text-danger" : "text-amber-700")}
+                />
               </button>
             </div>
           )}

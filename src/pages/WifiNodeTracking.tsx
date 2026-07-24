@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { Antenna, RadioTower, Sparkles } from "lucide-react";
 import { GlassCard, CardHeader } from "@/components/ui/GlassCard";
 import { WifiNodeMap } from "@/components/wifi/WifiNodeMap";
@@ -6,22 +6,16 @@ import { WifiNodeRoomCards } from "@/components/wifi/WifiNodeRoomCards";
 import { WifiMotionLog } from "@/components/wifi/WifiMotionLog";
 import { DualVerificationCard } from "@/components/wifi/DualVerificationCard";
 import type { NodeMotionEvent, WifiNodeLive } from "@/lib/wifiNodes";
-import {
-  DEFAULT_WIFI_NODES,
-  seedMotionLogEvents,
-  verifyFallConsensus,
-  verifyWanderingConsensus,
-} from "@/lib/wifiNodes";
+import { DEFAULT_WIFI_NODES, seedMotionLogEvents } from "@/lib/wifiNodes";
 import { usePatientData } from "@/context/PatientDataContext";
 
 export default function WifiNodeTracking() {
   const {
-    room,
-    geofence,
-    patientPosition,
-    isLocationMoving,
     fallDetected,
     wanderingAlert,
+    fallVerifyStatus,
+    wanderVerifyStatus,
+    dualVerified,
   } = usePatientData();
 
   const [nodes, setNodes] = useState<WifiNodeLive[]>(() =>
@@ -42,30 +36,9 @@ export default function WifiNodeTracking() {
   }));
 
   const activeCount = displayNodes.filter((n) => n.state !== "quiet").length;
-
-  const fallStatus = useMemo(
-    () =>
-      verifyFallConsensus({
-        fallDetected,
-        isMoving: isLocationMoving,
-        nodes: displayNodes,
-      }),
-    [fallDetected, isLocationMoving, displayNodes]
-  );
-
-  const wanderStatus = useMemo(
-    () =>
-      verifyWanderingConsensus({
-        wanderingAlert: !!wanderingAlert,
-        geofence,
-        room,
-        nodes: displayNodes,
-        patientPos: patientPosition,
-      }),
-    [wanderingAlert, geofence, room, displayNodes, patientPosition]
-  );
-
-  const caregiverAlertSent = fallStatus === "confirmed" || wanderStatus === "confirmed";
+  const fallStatus = fallVerifyStatus;
+  const wanderStatus = wanderVerifyStatus;
+  const caregiverAlertSent = dualVerified;
 
   const onNodesChange = useCallback((next: WifiNodeLive[]) => {
     setNodes(next);

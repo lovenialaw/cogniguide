@@ -27,8 +27,8 @@ const NAV_ITEMS = [
 ];
 
 export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
-  const { fallDetected, wanderingAlert } = usePatientData();
-  const hasAlert = fallDetected || !!wanderingAlert;
+  const { dualVerified } = usePatientData();
+  const hasAlert = dualVerified;
 
   return (
     <div className="flex h-full flex-col gap-6 px-4 py-6">

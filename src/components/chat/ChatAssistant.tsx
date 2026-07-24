@@ -32,7 +32,7 @@ export function ChatAssistant() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  const hasUrgent = patientData.fallDetected || !!patientData.wanderingAlert;
+  const hasUrgent = patientData.dualVerified;
 
   useEffect(() => {
     if (scrollRef.current) {

@@ -26,11 +26,16 @@ export default function Emergency() {
     fallDetected,
     fallEvent,
     wanderingAlert,
+    dualVerified,
+    fallVerifyStatus,
+    wanderVerifyStatus,
     endEmergency,
   } = usePatientData();
   const { callPatient, callCaregiver, callEmergencyServices, openMaps } = useCareActions();
 
-  const hasActiveEmergency = fallDetected || !!wanderingAlert;
+  const watchFlagged = fallDetected || !!wanderingAlert;
+  const hasActiveEmergency = dualVerified;
+  const awaitingSensors = watchFlagged && !dualVerified;
 
   const actions = [
     { label: "Call Patient", icon: Phone, tone: "bg-brand-500 hover:bg-brand-600", onClick: callPatient },
@@ -53,7 +58,7 @@ export default function Emergency() {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           className={`rounded-3xl text-white p-6 sm:p-8 shadow-glow-danger relative overflow-hidden ${
-            fallDetected
+            fallVerifyStatus === "confirmed"
               ? "bg-gradient-to-r from-danger to-danger-dark"
               : "bg-gradient-to-r from-amber-glow to-amber-600"
           }`}
@@ -70,7 +75,7 @@ export default function Emergency() {
                 transition={{ repeat: Infinity, duration: 0.85 }}
                 className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20 backdrop-blur"
               >
-                {fallDetected ? (
+                {fallVerifyStatus === "confirmed" ? (
                   <AlertTriangle className="h-8 w-8" />
                 ) : (
                   <Waypoints className="h-8 w-8" />
@@ -81,9 +86,9 @@ export default function Emergency() {
                   Active Emergency
                 </p>
                 <p className="text-white/80 text-sm mt-1">
-                  {fallDetected
-                    ? "Fall detected — immediate response required"
-                    : "Possible wandering detected — patient leaving safe zone"}
+                  {fallVerifyStatus === "confirmed"
+                    ? "Dual-verified fall — smartwatch + home ESP32 nodes agree"
+                    : "Dual-verified wandering — watch + home sensors agree"}
                 </p>
               </div>
             </div>
@@ -95,6 +100,29 @@ export default function Emergency() {
             </button>
           </div>
         </motion.div>
+      ) : awaitingSensors ? (
+        <GlassCard className="p-6 sm:p-8 flex items-center gap-4 border border-amber-glow/40 bg-amber-glow/8">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-glow/20 text-amber-700">
+            <AlertTriangle className="h-7 w-7" />
+          </div>
+          <div className="flex-1">
+            <p className="font-display font-extrabold text-xl text-ink-900">
+              Awaiting home sensor confirmation
+            </p>
+            <p className="text-sm text-ink-500 mt-1">
+              {fallDetected
+                ? "Smartwatch flagged a fall. No caregiver alert until ESP32 nodes confirm stillness."
+                : "Watch flagged a possible exit. No caregiver alert until ESP32 RSSI confirms."}{" "}
+              Status: {fallDetected ? fallVerifyStatus : wanderVerifyStatus}.
+            </p>
+          </div>
+          <button
+            onClick={endEmergency}
+            className="rounded-2xl border border-ink-200 bg-white text-ink-800 font-bold px-4 py-2.5 text-sm hover:bg-ink-50 transition-colors whitespace-nowrap"
+          >
+            Dismiss
+          </button>
+        </GlassCard>
       ) : (
         <GlassCard className="p-6 sm:p-8 flex items-center gap-4">
           <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-mint-500/15 text-mint-600">
@@ -103,8 +131,8 @@ export default function Emergency() {
           <div>
             <p className="font-display font-extrabold text-xl text-ink-900">No Active Emergency</p>
             <p className="text-sm text-ink-400">
-              All systems normal. This panel activates automatically when a fall, wandering event, or
-              other critical alert is detected.
+              Caregiver alerts require dual verification — smartwatch and home ESP32 nodes must both
+              agree before an emergency is sent.
             </p>
           </div>
         </GlassCard>
