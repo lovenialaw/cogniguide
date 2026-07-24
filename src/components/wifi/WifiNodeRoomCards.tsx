@@ -2,10 +2,7 @@ import { Radio, Wifi } from "lucide-react";
 import type { NodeMotionState, WifiNodeLive } from "@/lib/wifiNodes";
 import { cn } from "@/lib/utils";
 
-const STATE_META: Record<
-  NodeMotionState,
-  { border: string; badge: string; label: string }
-> = {
+const STATE_META: Record<NodeMotionState, { border: string; badge: string; label: string }> = {
   quiet: {
     border: "border-mint-400/60",
     badge: "bg-mint-500/12 text-mint-700",
@@ -36,13 +33,11 @@ export function WifiNodeRoomCards({
 }) {
   return (
     <div>
-      <div className="mb-3">
-        <p className="font-display font-bold text-ink-900">ESP32 home nodes</p>
-        <p className="text-xs text-ink-400 mt-0.5">
-          Four nodes monitor smartwatch Wi-Fi RSSI — tap a room name to edit
-        </p>
+      <div className="mb-4">
+        <p className="font-display font-bold text-ink-900">Home nodes</p>
+        <p className="text-xs text-ink-400 mt-0.5">Tap a room name to edit</p>
       </div>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {nodes.map((node) => {
           const meta = STATE_META[node.state];
           const isEditing = editingId === node.id;
@@ -52,15 +47,15 @@ export function WifiNodeRoomCards({
               type="button"
               onClick={() => onSelect(node.id)}
               className={cn(
-                "rounded-2xl border-2 bg-white/70 px-3.5 py-3.5 text-left transition-all hover:bg-white",
+                "rounded-2xl border-2 bg-white/70 px-4 py-4 text-left transition-all hover:bg-white",
                 meta.border,
                 isEditing && "ring-2 ring-brand-400/40"
               )}
             >
               <div className="flex items-center justify-between gap-2 mb-2">
-                <span className="flex items-center gap-1.5 text-xs font-bold text-ink-500">
-                  <Radio className="h-3.5 w-3.5" />
-                  {node.id}
+                <span className="flex items-center gap-1.5 text-sm font-bold text-ink-700">
+                  <Radio className="h-3.5 w-3.5 text-ink-400" />
+                  {node.label}
                 </span>
                 <span className={cn("rounded-full px-2 py-0.5 text-[10px] font-bold uppercase", meta.badge)}>
                   {meta.label}
@@ -82,9 +77,9 @@ export function WifiNodeRoomCards({
               ) : (
                 <p className="text-sm font-bold text-ink-800 truncate">{node.room}</p>
               )}
-              <p className="text-[11px] text-ink-400 mt-1 flex items-center gap-1">
+              <p className="text-[11px] text-ink-400 mt-1.5 flex items-center gap-1">
                 <Wifi className="h-3 w-3" />
-                RSSI {node.rssiDbm} dBm
+                {node.rssiDbm} dBm
               </p>
             </button>
           );

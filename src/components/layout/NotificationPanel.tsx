@@ -15,7 +15,7 @@ const SEVERITY_TONE: Record<AlertRecord["severity"], string> = {
 
 export function NotificationPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
   const panelRef = useRef<HTMLDivElement>(null);
-  const { alerts, fallDetected, wanderingAlert, dualVerified, fallVerifyStatus, wanderVerifyStatus } =
+  const { alerts, fallDetected, wanderingAlert, dualVerified, fallVerifyStatus, wanderVerifyStatus, patient, room, geofence } =
     usePatientData();
   const navigate = useNavigate();
 
@@ -57,7 +57,7 @@ export function NotificationPanel({ open, onClose }: { open: boolean; onClose: (
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -8, scale: 0.98 }}
           transition={{ duration: 0.18 }}
-          className="absolute right-0 top-full mt-2 w-[min(100vw-2rem,360px)] rounded-2xl bg-white border border-ink-100 shadow-xl overflow-hidden z-50"
+          className="fixed sm:absolute right-3 sm:right-0 top-[4.5rem] sm:top-full sm:mt-2 w-[min(100vw-1.5rem,360px)] max-h-[min(70vh,calc(100dvh-6rem))] rounded-2xl bg-white border border-ink-100 shadow-xl overflow-hidden z-[60] flex flex-col"
         >
           <div className="flex items-center justify-between px-4 py-3 border-b border-ink-50 bg-ink-50/50">
             <div className="flex items-center gap-2">
@@ -97,8 +97,10 @@ export function NotificationPanel({ open, onClose }: { open: boolean; onClose: (
                   >
                     {dualVerified
                       ? fallVerifyStatus === "confirmed"
-                        ? "Dual-verified fall — caregiver alerted"
-                        : "Dual-verified wandering — caregiver alerted"
+                        ? `${patient.name} fell in ${room}`
+                        : `${patient.name} wandered at ${
+                            geofence === "Outside Home" || geofence === "Near Exit" ? geofence : room
+                          }`
                       : fallDetected
                         ? "Fall pending home sensor confirm"
                         : "Wandering pending home sensor confirm"}
@@ -106,7 +108,7 @@ export function NotificationPanel({ open, onClose }: { open: boolean; onClose: (
                   <p className="text-xs text-ink-500">
                     {dualVerified
                       ? "Tap to open Emergency center"
-                      : `Awaiting ESP32 agreement (${fallDetected ? fallVerifyStatus : wanderVerifyStatus})`}
+                      : `Awaiting home nodes (${fallDetected ? fallVerifyStatus : wanderVerifyStatus})`}
                   </p>
                 </div>
                 <ChevronRight
@@ -116,7 +118,7 @@ export function NotificationPanel({ open, onClose }: { open: boolean; onClose: (
             </div>
           )}
 
-          <div className="max-h-[320px] overflow-y-auto p-2">
+          <div className="flex-1 min-h-0 overflow-y-auto p-2">
             {activeAlerts.length === 0 ? (
               <div className="px-4 py-8 text-center">
                 <p className="text-sm font-semibold text-ink-600">No active alerts</p>

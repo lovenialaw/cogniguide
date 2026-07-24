@@ -32,8 +32,7 @@
         "VIBRATE",
         "POST_NOTIFICATIONS",
         "SCHEDULE_EXACT_ALARM"
-      ],
-      "predictiveBackGestureEnabled": false
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"

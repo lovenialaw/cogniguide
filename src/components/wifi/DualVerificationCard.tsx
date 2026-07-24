@@ -7,21 +7,21 @@ function StatusPill({ status }: { status: DualVerifyStatus }) {
   if (status === "confirmed") {
     return (
       <span className="inline-flex items-center gap-1 rounded-full bg-mint-500/15 px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-wide text-mint-700">
-        <CheckCircle2 className="h-3.5 w-3.5" /> Dual-verified
+        <CheckCircle2 className="h-3.5 w-3.5" /> Confirmed
       </span>
     );
   }
   if (status === "pending") {
     return (
       <span className="inline-flex items-center gap-1 rounded-full bg-amber-glow/15 px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-wide text-amber-700">
-        <Clock3 className="h-3.5 w-3.5" /> Awaiting home nodes
+        <Clock3 className="h-3.5 w-3.5" /> Checking nodes
       </span>
     );
   }
   if (status === "watch_only") {
     return (
       <span className="inline-flex items-center gap-1 rounded-full bg-ink-100 px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-wide text-ink-500">
-        <XCircle className="h-3.5 w-3.5" /> Watch only — no alert
+        <XCircle className="h-3.5 w-3.5" /> Watch only
       </span>
     );
   }
@@ -46,7 +46,7 @@ function VoteCard({
   return (
     <div
       className={cn(
-        "rounded-2xl border px-4 py-3",
+        "rounded-2xl border px-4 py-3.5",
         agreed === true && "border-mint-400/50 bg-mint-500/8",
         agreed === false && "border-ink-100 bg-ink-50",
         agreed === null && "border-amber-glow/40 bg-amber-glow/8"
@@ -63,7 +63,7 @@ function VoteCard({
             agreed === null && "text-amber-700"
           )}
         >
-          {agreed === true ? "Agree" : agreed === false ? "No signal" : "Checking…"}
+          {agreed === true ? "Agree" : agreed === false ? "—" : "…"}
         </span>
       </div>
       <p className="text-xs text-ink-500 leading-relaxed">{detail}</p>
@@ -98,53 +98,53 @@ export function DualVerificationCard({
           : "idle";
 
   return (
-    <div>
-      <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="font-display font-bold text-ink-900">Dual verification</p>
           <p className="text-xs text-ink-400 mt-0.5">
-            Caregiver alerts fire only when the smartwatch and ESP32 home nodes both agree
+            Alert caregivers only when watch + home nodes both agree
           </p>
         </div>
         <StatusPill status={overall} />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <VoteCard
           title="Smartwatch"
           icon={<Smartphone className="h-4 w-4" />}
           agreed={fallDetected || wanderingAlert ? true : active ? null : false}
           detail={
             fallDetected
-              ? "IMU fall pattern detected — waiting for stillness confirmation"
+              ? "Fall pattern detected"
               : wanderingAlert
-                ? "Geofence / motion flags possible exit"
-                : "No watch-side emergency event"
+                ? "Possible exit flagged"
+                : "No emergency event"
           }
         />
         <VoteCard
-          title="Home ESP32 nodes"
+          title="Home nodes"
           icon={<Cpu className="h-4 w-4" />}
           agreed={
-            overall === "confirmed" ? true : overall === "pending" ? null : overall === "watch_only" ? false : false
+            overall === "confirmed" ? true : overall === "pending" ? null : false
           }
           detail={
             fallDetected
               ? overall === "confirmed"
-                ? `Nearest ${nearest?.id ?? "node"} sees stillness after impact (RSSI ${nearest?.rssiDbm ?? "—"} dBm)`
-                : `Checking motionless state via CSI/RSSI at ${nearest?.room ?? "nearest room"}…`
+                ? `${nearest?.label ?? "Node"} confirms stillness`
+                : "Checking stillness…"
               : wanderingAlert
                 ? overall === "confirmed"
-                  ? `Nodes confirm presence near exit side · strongest ${nearest?.id} (${nearest?.rssiDbm} dBm)`
-                  : "Tracking RSSI as patient approaches exit…"
-                : "Four ESP32 nodes monitoring watch Wi-Fi RSSI"
+                  ? `${nearest?.label ?? "Node"} confirms near exit`
+                  : "Checking exit-side signal…"
+                : "Monitoring watch signal"
           }
         />
       </div>
 
       <div
         className={cn(
-          "rounded-2xl px-4 py-3 text-sm font-semibold",
+          "rounded-2xl px-4 py-3.5 text-sm font-semibold",
           caregiverAlertSent
             ? "bg-danger/10 border border-danger/25 text-danger-dark"
             : overall === "pending"
@@ -153,12 +153,10 @@ export function DualVerificationCard({
         )}
       >
         {caregiverAlertSent
-          ? "Emergency alert sent to caregivers — both sensors agreed."
+          ? "Caregiver alert sent — both sides agreed."
           : overall === "pending"
-            ? "Hold: watch flagged an event, but home nodes have not confirmed yet — no caregiver alert."
-            : overall === "confirmed"
-              ? "Consensus reached — caregiver alert authorized."
-              : "No dual-verified emergency. Single-source detections stay local until both sides agree."}
+            ? "Waiting on home nodes — no caregiver alert yet."
+            : "No dual-verified emergency."}
       </div>
     </div>
   );

@@ -99,8 +99,11 @@ export function ChatAssistant() {
             transition={{ type: "spring", stiffness: 380, damping: 28 }}
             className={cn(
               "fixed z-50 flex flex-col overflow-hidden glass-card shadow-glass-lg border border-white/60",
-              "bottom-24 right-4 sm:right-6 w-[calc(100vw-2rem)] sm:w-[400px]",
-              "h-[min(560px,calc(100vh-7rem))] rounded-3xl"
+              "left-3 right-3 sm:left-auto sm:right-6",
+              "bottom-[calc(5.5rem+env(safe-area-inset-bottom,0px))] sm:bottom-24",
+              "w-auto sm:w-[380px] max-w-[calc(100vw-1.5rem)]",
+              "h-[min(520px,calc(100dvh-8.5rem-env(safe-area-inset-bottom,0px)))] max-h-[calc(100dvh-8.5rem)]",
+              "rounded-3xl"
             )}
           >
             {/* Header */}
@@ -214,7 +217,7 @@ export function ChatAssistant() {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         className={cn(
-          "fixed z-50 bottom-6 right-4 sm:right-6 flex h-14 w-14 items-center justify-center rounded-2xl text-white shadow-glass-lg transition-colors",
+          "fixed z-50 bottom-[calc(1.25rem+env(safe-area-inset-bottom,0px))] right-3 sm:right-6 flex h-14 w-14 items-center justify-center rounded-2xl text-white shadow-glass-lg transition-colors",
           open ? "bg-ink-700" : "bg-gradient-to-br from-brand-500 to-mint-500 shadow-glow-brand",
           hasUrgent && !open && "animate-pulse-slow ring-4 ring-danger/30"
         )}

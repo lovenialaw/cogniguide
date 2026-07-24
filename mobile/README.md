@@ -1,13 +1,18 @@
-# COGNIGUIDE — React Native (Expo) Mobile App
+# COGNIGUIDE — React Native (Expo SDK 54)
 
 Installable caregiver app for Android / iOS with **real phone notifications**.
 
-The app loads the live COGNIGUIDE dashboard inside a native WebView and listens for alert messages (fall, wandering, strong WiFi motion). When an alert fires, **Expo Notifications** shows a system notification on your phone.
+Targets **Expo SDK 54** (React Native **0.81** / React **19.1**) so it runs in **Expo Go** builds that support SDK 54.
+
+The app loads the live COGNIGUIDE dashboard inside a native WebView and listens for alert messages (dual-verified fall / wandering). When both the smartwatch and home ESP32 nodes agree, **Expo Notifications** shows a system notification on your phone.
+
+## Requirements
+
+- Node.js **20.19+**
+- Phone with **Expo Go** that supports **SDK 54**  
+  (If Expo Go on your store only supports a newer SDK, use an APK build below instead.)
 
 ## Quick start (phone on same Wi‑Fi)
-
-1. Install **Expo Go** from the Play Store / App Store  
-2. On your PC:
 
 ```bash
 cd mobile
@@ -15,22 +20,16 @@ npm install
 npx expo start
 ```
 
-3. Scan the QR code with Expo Go (Android) or the Camera app (iPhone)
+1. Install **Expo Go** (SDK 54–compatible) from the Play Store / App Store  
+2. Scan the QR code with Expo Go (Android) or the Camera app (iPhone)  
+3. Allow notifications when prompted  
 
-When the app opens, allow notifications. You’ll get a “COGNIGUIDE ready” toast, then real alerts when you tap **Simulate Fall** / **Simulate Wandering** in the dashboard.
+You’ll get a “COGNIGUIDE ready” toast. Caregiver alerts fire only after **dual verification** (watch + home nodes).
 
-> The dashboard URL defaults to `https://lovenialaw.github.io/cogniguide/#/`  
-> Make sure GitHub Pages is serving the latest build (or change `DASHBOARD_URL` in `App.tsx` to your machine’s LAN URL while developing).
+> Dashboard URL: `https://lovenialaw.github.io/cogniguide/#/`  
+> Override for local LAN testing by changing `DASHBOARD_URL` in `App.tsx`.
 
-## Notifications that fire
-
-| Event | Notification |
-|-------|----------------|
-| Fall detected | High-priority “Fall Detected” |
-| Wandering alert | “Wandering Alert” |
-| Strong WiFi node motion | “WiFi Node — Strong Motion” |
-
-## Build a real APK (install without Expo Go)
+## Build a real APK (no Expo Go needed)
 
 ```bash
 npm install -g eas-cli
@@ -39,9 +38,7 @@ eas login
 eas build -p android --profile preview
 ```
 
-EAS returns a download link for an `.apk` you can install on your Android phone.
-
-For iOS you’ll need an Apple Developer account and:
+EAS returns a download link for an `.apk` you can install on Android.
 
 ```bash
 eas build -p ios --profile preview
@@ -51,9 +48,10 @@ eas build -p ios --profile preview
 
 ```
 mobile/
-  App.tsx          # WebView shell + notification handler
+  App.tsx          # WebView shell + notification handler (SDK 54)
   app.json         # Bundle IDs, notification plugin, permissions
   eas.json         # APK build profiles
+  package.json     # expo ~54.0.0
 ```
 
 Web dashboard bridge (parent project):
@@ -65,6 +63,6 @@ src/components/AlertNotificationBridge.tsx
 
 ## Notes
 
-- This is a **React Native Expo shell** around your existing React dashboard (fastest path to a real phone install + notifications).
-- A full native rewrite of every screen would be a separate large project; this keeps all current features (charts, maps, WiFi nodes, chat) working immediately.
-- Push notifications from a server (FCM/APNs) can be added later; local notifications already work offline once the alert is generated in-app.
+- This is an **Expo SDK 54** shell around the React web dashboard (fastest path to phone install + notifications).
+- Dual-verified emergencies only: the WebView posts `cogniguide_alert` after watch + ESP32 consensus.
+- Server push (FCM/APNs) can be added later; local notifications work once the alert is generated in-app.

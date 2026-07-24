@@ -19,8 +19,8 @@ const DASHBOARD_URL = "https://lovenialaw.github.io/cogniguide/#/";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowBanner: true,
-    shouldShowList: true,
+    // SDK 54 NotificationBehavior
+    shouldShowAlert: true,
     shouldPlaySound: true,
     shouldSetBadge: true,
   }),

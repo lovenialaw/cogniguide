@@ -10,6 +10,7 @@ export function AlertNotificationBridge() {
   const {
     patient,
     room,
+    geofence,
     fallEvent,
     fallVerifyStatus,
     wanderVerifyStatus,
@@ -31,11 +32,12 @@ export function AlertNotificationBridge() {
   useEffect(() => {
     if (fallVerifyStatus !== "confirmed" || alertedFall.current) return;
     alertedFall.current = true;
+    const place = room || "an unknown room";
     void sendCareAlert({
-      title: "⚠ Dual-Verified Fall",
-      body: `${patient.name}: smartwatch + ESP32 home nodes agree on a fall in ${room}${
-        fallEvent ? ` (${fallEvent.severity}, ${fallEvent.time})` : ""
-      }. Emergency alert sent to caregivers.`,
+      title: `${patient.name} fell in ${place}`,
+      body: fallEvent
+        ? `Dual-verified fall (${fallEvent.severity}) at ${fallEvent.time}. Smartwatch + home ESP32 nodes agree — respond now.`
+        : `Dual-verified fall. Smartwatch + home ESP32 nodes agree — respond now.`,
       severity: "high",
       category: "fall",
     });
@@ -44,13 +46,17 @@ export function AlertNotificationBridge() {
   useEffect(() => {
     if (wanderVerifyStatus !== "confirmed" || alertedWander.current) return;
     alertedWander.current = true;
+    const place =
+      geofence === "Outside Home" || geofence === "Near Exit"
+        ? geofence
+        : room || "an unknown area";
     void sendCareAlert({
-      title: "⚠ Dual-Verified Wandering",
-      body: `${patient.name}: watch geofence + home ESP32 RSSI both confirm exit-side presence (${room}). Emergency alert sent to caregivers.`,
+      title: `${patient.name} wandered at ${place}`,
+      body: `Last seen near ${room}. Dual-verified by watch geofence + home ESP32 RSSI — respond now.`,
       severity: "medium",
       category: "wandering",
     });
-  }, [wanderVerifyStatus, patient.name, room]);
+  }, [wanderVerifyStatus, patient.name, room, geofence]);
 
   return null;
 }

@@ -45,9 +45,9 @@ export function useCareActions() {
 
     let summary = "Status update requested";
     if (fallVerifyStatus === "confirmed") {
-      summary = `Dual-verified fall — patient ${patient.name} in ${room}`;
+      summary = `${patient.name} fell in ${room}`;
     } else if (wanderVerifyStatus === "confirmed") {
-      summary = `Dual-verified wandering — ${patient.name} near ${room} (${geofence})`;
+      summary = `${patient.name} wandered at ${geofence === "Outside Home" || geofence === "Near Exit" ? geofence : room}`;
     } else {
       summary = `${patient.name} needs attention — last seen in ${room}`;
     }
