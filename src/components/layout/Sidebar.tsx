@@ -7,6 +7,7 @@ import {
   HeartPulse,
   LayoutDashboard,
   MapPin,
+  RadioTower,
   Settings,
   ShieldAlert,
   Stethoscope,
@@ -18,6 +19,7 @@ const NAV_ITEMS = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true },
   { to: "/live", label: "Live Monitoring", icon: Activity },
   { to: "/location", label: "Location", icon: MapPin },
+  { to: "/wifi-nodes", label: "WiFi Node Tracking", icon: RadioTower, isNew: true },
   { to: "/analytics", label: "AI Analytics", icon: BrainCircuit },
   { to: "/vitals", label: "Vital Signs", icon: HeartPulse },
   { to: "/alerts", label: "Alert History", icon: Bell },
@@ -42,8 +44,8 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         </div>
       </div>
 
-      <nav className="flex-1 flex flex-col gap-1">
-        {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
+      <nav className="flex-1 flex flex-col gap-1 overflow-y-auto">
+        {NAV_ITEMS.map(({ to, label, icon: Icon, end, isNew }) => (
           <NavLink
             key={to}
             to={to}
@@ -58,8 +60,22 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
               )
             }
           >
-            <Icon className="h-[18px] w-[18px]" strokeWidth={2.1} />
-            {label}
+            {({ isActive }) => (
+              <>
+                <Icon className="h-[18px] w-[18px] shrink-0" strokeWidth={2.1} />
+                <span className="flex-1 truncate">{label}</span>
+                {isNew && (
+                  <span
+                    className={cn(
+                      "shrink-0 rounded-full px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wide",
+                      isActive ? "bg-white/25 text-white" : "bg-mint-500 text-white"
+                    )}
+                  >
+                    New
+                  </span>
+                )}
+              </>
+            )}
           </NavLink>
         ))}
       </nav>

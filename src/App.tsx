@@ -5,6 +5,7 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import DashboardHome from "@/pages/DashboardHome";
 import LiveMonitoring from "@/pages/LiveMonitoring";
 import LocationMonitoring from "@/pages/LocationMonitoring";
+import WifiNodeTracking from "@/pages/WifiNodeTracking";
 import AIAnalytics from "@/pages/AIAnalytics";
 import VitalSigns from "@/pages/VitalSigns";
 import AlertHistory from "@/pages/AlertHistory";
@@ -21,6 +22,7 @@ function App() {
             <Route path="/" element={<DashboardHome />} />
             <Route path="/live" element={<LiveMonitoring />} />
             <Route path="/location" element={<LocationMonitoring />} />
+            <Route path="/wifi-nodes" element={<WifiNodeTracking />} />
             <Route path="/analytics" element={<AIAnalytics />} />
             <Route path="/vitals" element={<VitalSigns />} />
             <Route path="/alerts" element={<AlertHistory />} />

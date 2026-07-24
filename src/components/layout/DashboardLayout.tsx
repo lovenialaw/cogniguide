@@ -5,11 +5,16 @@ import { X } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
 import { ChatAssistant } from "@/components/chat/ChatAssistant";
+import { AlertNotificationBridge } from "@/components/AlertNotificationBridge";
 
 const PAGE_META: Record<string, { title: string; subtitle: string }> = {
   "/": { title: "Dashboard", subtitle: "Real-time overview of patient wellbeing" },
   "/live": { title: "Live Monitoring", subtitle: "Real-time motion, fall detection & sensor feed" },
   "/location": { title: "Location Monitoring", subtitle: "Home safe zone & Wi-Fi based positioning" },
+  "/wifi-nodes": {
+    title: "WiFi Node Tracking",
+    subtitle: "Room-level presence detection from CSI Wi-Fi nodes",
+  },
   "/analytics": { title: "AI Analytics", subtitle: "Trends, patterns & model confidence" },
   "/vitals": { title: "Vital Signs", subtitle: "Heart rate, oxygen, temperature & stress" },
   "/alerts": { title: "Alert History", subtitle: "Complete timeline of triggered events" },
@@ -75,6 +80,7 @@ export function DashboardLayout() {
           </AnimatePresence>
         </main>
         <ChatAssistant />
+        <AlertNotificationBridge />
       </div>
     </div>
   );

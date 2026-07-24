@@ -1,0 +1,53 @@
+{
+  "expo": {
+    "name": "COGNIGUIDE",
+    "slug": "cogniguide",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "scheme": "cogniguide",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#F4F8FD"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.cogniguide.caregiver",
+      "infoPlist": {
+        "UIBackgroundModes": ["remote-notification"]
+      }
+    },
+    "android": {
+      "package": "com.cogniguide.caregiver",
+      "adaptiveIcon": {
+        "backgroundColor": "#1487F5",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "permissions": [
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE",
+        "POST_NOTIFICATIONS",
+        "SCHEDULE_EXACT_ALARM"
+      ],
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#1487F5",
+          "defaultChannel": "care-alerts"
+        }
+      ]
+    ],
+    "extra": {}
+  }
+}
