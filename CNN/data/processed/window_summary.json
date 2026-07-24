@@ -1,0 +1,20 @@
+{
+  "window_size_samples": 100,
+  "window_duration_s": 2.0,
+  "step_size_samples": 50,
+  "overlap_percent": 50.0,
+  "total_windows": 644,
+  "windows_per_label": {
+    "Walking": 90,
+    "Sitting": 82,
+    "Standing": 89,
+    "Lying_Down": 95,
+    "Upstairs": 94,
+    "Downstairs": 90,
+    "Picking_Object": 31,
+    "Fall_Forward": 25,
+    "Fall_Backward": 24,
+    "Fall_Sideways": 24
+  },
+  "output_file": "windowed_dataset.csv"
+}

@@ -4,13 +4,14 @@ import { GlassCard, CardHeader } from "@/components/ui/GlassCard";
 import { WifiNodeMap } from "@/components/wifi/WifiNodeMap";
 import { WifiNodeRoomCards } from "@/components/wifi/WifiNodeRoomCards";
 import { WifiMotionLog } from "@/components/wifi/WifiMotionLog";
+import { WanderingAlertCard } from "@/components/location/WanderingAlertCard";
 import type { NodeMotionEvent, WifiNodeLive } from "@/lib/wifiNodes";
 import { DEFAULT_WIFI_NODES, seedMotionLogEvents } from "@/lib/wifiNodes";
 import { sendCareAlert } from "@/lib/nativeBridge";
 import { usePatientData } from "@/context/PatientDataContext";
 
 export default function WifiNodeTracking() {
-  const { patient } = usePatientData();
+  const { patient, wanderingAlert, simulateWandering } = usePatientData();
   const [nodes, setNodes] = useState<WifiNodeLive[]>(() =>
     DEFAULT_WIFI_NODES.map((n) => ({ ...n, intensity: 1, state: "quiet" as const }))
   );
@@ -31,18 +32,18 @@ export default function WifiNodeTracking() {
 
   const onMotionEvent = useCallback(
     (evt: NodeMotionEvent) => {
-      const room = roomOverrides[evt.nodeId] ?? evt.room;
+      const roomName = roomOverrides[evt.nodeId] ?? evt.room;
       const nextEvt = {
         ...evt,
-        room,
-        message: `${evt.state === "strong" ? "Strong motion" : "Motion"} detected — ${room}`,
+        room: roomName,
+        message: `${evt.state === "strong" ? "Strong motion" : "Motion"} detected — ${roomName}`,
       };
       setEvents((prev) => [nextEvt, ...prev].slice(0, 80));
 
       if (evt.state === "strong") {
         void sendCareAlert({
           title: "WiFi Node — Strong Motion",
-          body: `${patient.name}: strong presence at ${room} (${evt.nodeId}).`,
+          body: `${patient.name}: strong presence at ${roomName} (${evt.nodeId}).`,
           severity: "medium",
           category: "wifi_motion",
         });
@@ -50,6 +51,16 @@ export default function WifiNodeTracking() {
     },
     [roomOverrides, patient.name]
   );
+
+  const handleSimulateWandering = () => {
+    simulateWandering();
+    void sendCareAlert({
+      title: "⚠ Wandering Alert",
+      body: `${patient.name} may be leaving the safe zone. WiFi nodes tracking path toward exit.`,
+      severity: "medium",
+      category: "wandering",
+    });
+  };
 
   return (
     <div className="flex flex-col gap-5">
@@ -70,17 +81,34 @@ export default function WifiNodeTracking() {
         </div>
       </div>
 
+      <WanderingAlertCard />
+
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
-        <GlassCard className="p-5 xl:col-span-2" glow="brand">
+        <GlassCard className="p-5 xl:col-span-2" glow={wanderingAlert ? "danger" : "brand"}>
           <CardHeader
             icon={<Antenna className="h-5 w-5" />}
             title="Node coverage map"
-            subtitle="Drag nodes to match your floor plan"
+            subtitle={
+              wanderingAlert
+                ? "Wandering active — patient moving toward exit · watch Near Exit (N6)"
+                : "Drag nodes to match your floor plan"
+            }
             action={
-              <span className="flex items-center gap-1.5 rounded-full bg-mint-500/10 px-2.5 py-1 text-[11px] font-bold text-mint-700">
-                <Sparkles className="h-3.5 w-3.5" />
-                {activeCount} active
-              </span>
+              <div className="flex items-center gap-2">
+                {!wanderingAlert && (
+                  <button
+                    type="button"
+                    onClick={handleSimulateWandering}
+                    className="text-[11px] font-semibold text-ink-400 hover:text-danger border border-ink-200 hover:border-danger/40 rounded-full px-3 py-1.5 transition-colors"
+                  >
+                    Simulate Wandering
+                  </button>
+                )}
+                <span className="flex items-center gap-1.5 rounded-full bg-mint-500/10 px-2.5 py-1 text-[11px] font-bold text-mint-700">
+                  <Sparkles className="h-3.5 w-3.5" />
+                  {activeCount} active
+                </span>
+              </div>
             }
           />
           <WifiNodeMap onNodesChange={onNodesChange} onMotionEvent={onMotionEvent} />
@@ -98,8 +126,8 @@ export default function WifiNodeTracking() {
             nodes={displayNodes}
             editingId={editingId}
             onSelect={(id) => setEditingId((prev) => (prev === id ? null : id))}
-            onRename={(id, room) => {
-              setRoomOverrides((prev) => ({ ...prev, [id]: room }));
+            onRename={(id, nextRoom) => {
+              setRoomOverrides((prev) => ({ ...prev, [id]: nextRoom }));
               setEditingId(null);
             }}
           />

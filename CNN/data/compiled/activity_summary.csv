@@ -1,0 +1,11 @@
+activity_label,sessions,total_samples,total_duration_s,avg_session_duration_s
+Walking,9,5186,103.67,11.52
+Sitting,9,4755,95.01,10.56
+Standing,9,5078,101.48,11.28
+Lying_Down,9,5430,108.54,12.06
+Upstairs,9,5296,105.83,11.76
+Downstairs,9,5193,103.74,11.53
+Picking_Object,9,2173,43.38,4.82
+Fall_Forward,12,2105,42.0,3.5
+Fall_Backward,12,2105,42.02,3.5
+Fall_Sideways,12,2095,41.78,3.48

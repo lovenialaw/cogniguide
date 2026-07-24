@@ -1,0 +1,1632 @@
+{
+  "project": "COGNIGUIDE CNN-LSTM Fall Detection",
+  "generated_at": "2026-07-05T20:52:36.831666",
+  "sample_rate_hz": 50,
+  "window_size_samples": 100,
+  "window_duration_s": 2.0,
+  "channels": [
+    "Ax",
+    "Ay",
+    "Az",
+    "Gx",
+    "Gy",
+    "Gz"
+  ],
+  "volunteers": [
+    {
+      "id": "V01",
+      "name": "Healthy Adult (28y)",
+      "role": "developer"
+    },
+    {
+      "id": "V02",
+      "name": "Healthy Adult (45y)",
+      "role": "caregiver_proxy"
+    },
+    {
+      "id": "V03",
+      "name": "Healthy Adult (62y)",
+      "role": "elderly_proxy"
+    }
+  ],
+  "activities": [
+    "Walking",
+    "Sitting",
+    "Standing",
+    "Lying_Down",
+    "Upstairs",
+    "Downstairs",
+    "Picking_Object",
+    "Fall_Forward",
+    "Fall_Backward",
+    "Fall_Sideways"
+  ],
+  "total_sessions": 99,
+  "total_samples": 39416,
+  "sessions": [
+    {
+      "session_id": "S001",
+      "file": "S001_walking_vV01_r1.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Walking",
+      "repetition": 1,
+      "duration_s": 12.48,
+      "sample_count": 624,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T09:04:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S002",
+      "file": "S002_walking_vV01_r2.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Walking",
+      "repetition": 2,
+      "duration_s": 11.76,
+      "sample_count": 589,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T09:08:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S003",
+      "file": "S003_walking_vV01_r3.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Walking",
+      "repetition": 3,
+      "duration_s": 9.77,
+      "sample_count": 489,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T09:12:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S004",
+      "file": "S004_sitting_vV01_r1.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Sitting",
+      "repetition": 1,
+      "duration_s": 9.0,
+      "sample_count": 451,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T09:16:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S005",
+      "file": "S005_sitting_vV01_r2.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Sitting",
+      "repetition": 2,
+      "duration_s": 9.03,
+      "sample_count": 452,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T09:20:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S006",
+      "file": "S006_sitting_vV01_r3.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Sitting",
+      "repetition": 3,
+      "duration_s": 9.66,
+      "sample_count": 483,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T09:24:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S007",
+      "file": "S007_standing_vV01_r1.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Standing",
+      "repetition": 1,
+      "duration_s": 10.4,
+      "sample_count": 521,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T09:28:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S008",
+      "file": "S008_standing_vV01_r2.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Standing",
+      "repetition": 2,
+      "duration_s": 9.69,
+      "sample_count": 485,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T09:32:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S009",
+      "file": "S009_standing_vV01_r3.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Standing",
+      "repetition": 3,
+      "duration_s": 10.23,
+      "sample_count": 512,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T09:36:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S010",
+      "file": "S010_lying_down_vV01_r1.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Lying_Down",
+      "repetition": 1,
+      "duration_s": 11.84,
+      "sample_count": 592,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T09:40:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S011",
+      "file": "S011_lying_down_vV01_r2.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Lying_Down",
+      "repetition": 2,
+      "duration_s": 14.18,
+      "sample_count": 709,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T09:44:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S012",
+      "file": "S012_lying_down_vV01_r3.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Lying_Down",
+      "repetition": 3,
+      "duration_s": 13.15,
+      "sample_count": 658,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T09:48:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S013",
+      "file": "S013_upstairs_vV01_r1.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Upstairs",
+      "repetition": 1,
+      "duration_s": 9.56,
+      "sample_count": 478,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T09:52:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S014",
+      "file": "S014_upstairs_vV01_r2.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Upstairs",
+      "repetition": 2,
+      "duration_s": 13.03,
+      "sample_count": 652,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T09:56:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S015",
+      "file": "S015_upstairs_vV01_r3.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Upstairs",
+      "repetition": 3,
+      "duration_s": 11.43,
+      "sample_count": 572,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T10:00:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S016",
+      "file": "S016_downstairs_vV01_r1.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Downstairs",
+      "repetition": 1,
+      "duration_s": 9.5,
+      "sample_count": 476,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T10:04:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S017",
+      "file": "S017_downstairs_vV01_r2.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Downstairs",
+      "repetition": 2,
+      "duration_s": 14.79,
+      "sample_count": 740,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T10:08:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S018",
+      "file": "S018_downstairs_vV01_r3.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Downstairs",
+      "repetition": 3,
+      "duration_s": 9.82,
+      "sample_count": 492,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T10:12:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S019",
+      "file": "S019_picking_object_vV01_r1.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Picking_Object",
+      "repetition": 1,
+      "duration_s": 6.0,
+      "sample_count": 300,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T10:16:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S020",
+      "file": "S020_picking_object_vV01_r2.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Picking_Object",
+      "repetition": 2,
+      "duration_s": 4.33,
+      "sample_count": 217,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T10:20:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S021",
+      "file": "S021_picking_object_vV01_r3.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Picking_Object",
+      "repetition": 3,
+      "duration_s": 4.46,
+      "sample_count": 224,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T10:24:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S022",
+      "file": "S022_fall_forward_vV01_r1.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Fall_Forward",
+      "repetition": 1,
+      "duration_s": 3.73,
+      "sample_count": 187,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T10:28:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S023",
+      "file": "S023_fall_forward_vV01_r2.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Fall_Forward",
+      "repetition": 2,
+      "duration_s": 3.01,
+      "sample_count": 151,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T10:32:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S024",
+      "file": "S024_fall_forward_vV01_r3.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Fall_Forward",
+      "repetition": 3,
+      "duration_s": 3.83,
+      "sample_count": 192,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T10:36:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S025",
+      "file": "S025_fall_forward_vV01_r4.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Fall_Forward",
+      "repetition": 4,
+      "duration_s": 3.34,
+      "sample_count": 168,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T10:40:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S026",
+      "file": "S026_fall_backward_vV01_r1.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Fall_Backward",
+      "repetition": 1,
+      "duration_s": 3.74,
+      "sample_count": 187,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T10:44:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S027",
+      "file": "S027_fall_backward_vV01_r2.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Fall_Backward",
+      "repetition": 2,
+      "duration_s": 3.06,
+      "sample_count": 154,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T10:48:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S028",
+      "file": "S028_fall_backward_vV01_r3.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Fall_Backward",
+      "repetition": 3,
+      "duration_s": 3.73,
+      "sample_count": 187,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T10:52:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S029",
+      "file": "S029_fall_backward_vV01_r4.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Fall_Backward",
+      "repetition": 4,
+      "duration_s": 3.8,
+      "sample_count": 190,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T10:56:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S030",
+      "file": "S030_fall_sideways_vV01_r1.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Fall_Sideways",
+      "repetition": 1,
+      "duration_s": 3.9,
+      "sample_count": 196,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T11:00:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S031",
+      "file": "S031_fall_sideways_vV01_r2.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Fall_Sideways",
+      "repetition": 2,
+      "duration_s": 3.03,
+      "sample_count": 152,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T11:04:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S032",
+      "file": "S032_fall_sideways_vV01_r3.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Fall_Sideways",
+      "repetition": 3,
+      "duration_s": 3.7,
+      "sample_count": 186,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T11:08:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S033",
+      "file": "S033_fall_sideways_vV01_r4.csv",
+      "volunteer_id": "V01",
+      "activity_label": "Fall_Sideways",
+      "repetition": 4,
+      "duration_s": 3.4,
+      "sample_count": 171,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T11:12:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S034",
+      "file": "S034_walking_vV02_r1.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Walking",
+      "repetition": 1,
+      "duration_s": 11.58,
+      "sample_count": 579,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T11:16:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S035",
+      "file": "S035_walking_vV02_r2.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Walking",
+      "repetition": 2,
+      "duration_s": 11.39,
+      "sample_count": 570,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T11:20:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S036",
+      "file": "S036_walking_vV02_r3.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Walking",
+      "repetition": 3,
+      "duration_s": 8.67,
+      "sample_count": 434,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T11:24:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S037",
+      "file": "S037_sitting_vV02_r1.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Sitting",
+      "repetition": 1,
+      "duration_s": 10.58,
+      "sample_count": 530,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T11:28:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S038",
+      "file": "S038_sitting_vV02_r2.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Sitting",
+      "repetition": 2,
+      "duration_s": 10.33,
+      "sample_count": 517,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T11:32:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S039",
+      "file": "S039_sitting_vV02_r3.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Sitting",
+      "repetition": 3,
+      "duration_s": 12.82,
+      "sample_count": 642,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T11:36:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S040",
+      "file": "S040_standing_vV02_r1.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Standing",
+      "repetition": 1,
+      "duration_s": 11.38,
+      "sample_count": 569,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T11:40:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S041",
+      "file": "S041_standing_vV02_r2.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Standing",
+      "repetition": 2,
+      "duration_s": 14.85,
+      "sample_count": 743,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T11:44:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S042",
+      "file": "S042_standing_vV02_r3.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Standing",
+      "repetition": 3,
+      "duration_s": 10.12,
+      "sample_count": 506,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T11:48:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S043",
+      "file": "S043_lying_down_vV02_r1.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Lying_Down",
+      "repetition": 1,
+      "duration_s": 9.64,
+      "sample_count": 482,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T11:52:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S044",
+      "file": "S044_lying_down_vV02_r2.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Lying_Down",
+      "repetition": 2,
+      "duration_s": 9.25,
+      "sample_count": 463,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T11:56:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S045",
+      "file": "S045_lying_down_vV02_r3.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Lying_Down",
+      "repetition": 3,
+      "duration_s": 12.8,
+      "sample_count": 641,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T12:00:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S046",
+      "file": "S046_upstairs_vV02_r1.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Upstairs",
+      "repetition": 1,
+      "duration_s": 11.57,
+      "sample_count": 579,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T12:04:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S047",
+      "file": "S047_upstairs_vV02_r2.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Upstairs",
+      "repetition": 2,
+      "duration_s": 12.77,
+      "sample_count": 639,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T12:08:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S048",
+      "file": "S048_upstairs_vV02_r3.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Upstairs",
+      "repetition": 3,
+      "duration_s": 14.05,
+      "sample_count": 703,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T12:12:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S049",
+      "file": "S049_downstairs_vV02_r1.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Downstairs",
+      "repetition": 1,
+      "duration_s": 9.4,
+      "sample_count": 470,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T12:16:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S050",
+      "file": "S050_downstairs_vV02_r2.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Downstairs",
+      "repetition": 2,
+      "duration_s": 9.24,
+      "sample_count": 463,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T12:20:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S051",
+      "file": "S051_downstairs_vV02_r3.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Downstairs",
+      "repetition": 3,
+      "duration_s": 14.97,
+      "sample_count": 749,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T12:24:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S052",
+      "file": "S052_picking_object_vV02_r1.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Picking_Object",
+      "repetition": 1,
+      "duration_s": 5.21,
+      "sample_count": 261,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T12:28:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S053",
+      "file": "S053_picking_object_vV02_r2.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Picking_Object",
+      "repetition": 2,
+      "duration_s": 4.76,
+      "sample_count": 238,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T12:32:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S054",
+      "file": "S054_picking_object_vV02_r3.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Picking_Object",
+      "repetition": 3,
+      "duration_s": 4.67,
+      "sample_count": 234,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T12:36:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S055",
+      "file": "S055_fall_forward_vV02_r1.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Fall_Forward",
+      "repetition": 1,
+      "duration_s": 3.04,
+      "sample_count": 152,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T12:40:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S056",
+      "file": "S056_fall_forward_vV02_r2.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Fall_Forward",
+      "repetition": 2,
+      "duration_s": 3.07,
+      "sample_count": 154,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T12:44:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S057",
+      "file": "S057_fall_forward_vV02_r3.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Fall_Forward",
+      "repetition": 3,
+      "duration_s": 3.42,
+      "sample_count": 171,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T12:48:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S058",
+      "file": "S058_fall_forward_vV02_r4.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Fall_Forward",
+      "repetition": 4,
+      "duration_s": 3.66,
+      "sample_count": 183,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T12:52:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S059",
+      "file": "S059_fall_backward_vV02_r1.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Fall_Backward",
+      "repetition": 1,
+      "duration_s": 3.87,
+      "sample_count": 194,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T12:56:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S060",
+      "file": "S060_fall_backward_vV02_r2.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Fall_Backward",
+      "repetition": 2,
+      "duration_s": 3.54,
+      "sample_count": 177,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T13:00:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S061",
+      "file": "S061_fall_backward_vV02_r3.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Fall_Backward",
+      "repetition": 3,
+      "duration_s": 3.44,
+      "sample_count": 173,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T13:04:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S062",
+      "file": "S062_fall_backward_vV02_r4.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Fall_Backward",
+      "repetition": 4,
+      "duration_s": 3.36,
+      "sample_count": 168,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T13:08:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S063",
+      "file": "S063_fall_sideways_vV02_r1.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Fall_Sideways",
+      "repetition": 1,
+      "duration_s": 3.46,
+      "sample_count": 173,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T13:12:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S064",
+      "file": "S064_fall_sideways_vV02_r2.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Fall_Sideways",
+      "repetition": 2,
+      "duration_s": 3.41,
+      "sample_count": 171,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T13:16:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S065",
+      "file": "S065_fall_sideways_vV02_r3.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Fall_Sideways",
+      "repetition": 3,
+      "duration_s": 3.37,
+      "sample_count": 169,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T13:20:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S066",
+      "file": "S066_fall_sideways_vV02_r4.csv",
+      "volunteer_id": "V02",
+      "activity_label": "Fall_Sideways",
+      "repetition": 4,
+      "duration_s": 3.34,
+      "sample_count": 167,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T13:24:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S067",
+      "file": "S067_walking_vV03_r1.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Walking",
+      "repetition": 1,
+      "duration_s": 12.28,
+      "sample_count": 614,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T13:28:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S068",
+      "file": "S068_walking_vV03_r2.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Walking",
+      "repetition": 2,
+      "duration_s": 14.0,
+      "sample_count": 700,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T13:32:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S069",
+      "file": "S069_walking_vV03_r3.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Walking",
+      "repetition": 3,
+      "duration_s": 11.74,
+      "sample_count": 587,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T13:36:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S070",
+      "file": "S070_sitting_vV03_r1.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Sitting",
+      "repetition": 1,
+      "duration_s": 13.43,
+      "sample_count": 672,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T13:40:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S071",
+      "file": "S071_sitting_vV03_r2.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Sitting",
+      "repetition": 2,
+      "duration_s": 10.5,
+      "sample_count": 525,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T13:44:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S072",
+      "file": "S072_sitting_vV03_r3.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Sitting",
+      "repetition": 3,
+      "duration_s": 9.66,
+      "sample_count": 483,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T13:48:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S073",
+      "file": "S073_standing_vV03_r1.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Standing",
+      "repetition": 1,
+      "duration_s": 14.44,
+      "sample_count": 723,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T13:52:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S074",
+      "file": "S074_standing_vV03_r2.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Standing",
+      "repetition": 2,
+      "duration_s": 10.15,
+      "sample_count": 508,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T13:56:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S075",
+      "file": "S075_standing_vV03_r3.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Standing",
+      "repetition": 3,
+      "duration_s": 10.22,
+      "sample_count": 511,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T14:00:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S076",
+      "file": "S076_lying_down_vV03_r1.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Lying_Down",
+      "repetition": 1,
+      "duration_s": 12.49,
+      "sample_count": 625,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T14:04:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S077",
+      "file": "S077_lying_down_vV03_r2.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Lying_Down",
+      "repetition": 2,
+      "duration_s": 11.44,
+      "sample_count": 572,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T14:08:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S078",
+      "file": "S078_lying_down_vV03_r3.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Lying_Down",
+      "repetition": 3,
+      "duration_s": 13.75,
+      "sample_count": 688,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T14:12:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S079",
+      "file": "S079_upstairs_vV03_r1.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Upstairs",
+      "repetition": 1,
+      "duration_s": 10.31,
+      "sample_count": 516,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T14:16:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S080",
+      "file": "S080_upstairs_vV03_r2.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Upstairs",
+      "repetition": 2,
+      "duration_s": 8.12,
+      "sample_count": 407,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T14:20:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S081",
+      "file": "S081_upstairs_vV03_r3.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Upstairs",
+      "repetition": 3,
+      "duration_s": 14.99,
+      "sample_count": 750,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T14:24:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S082",
+      "file": "S082_downstairs_vV03_r1.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Downstairs",
+      "repetition": 1,
+      "duration_s": 12.3,
+      "sample_count": 616,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T14:28:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S083",
+      "file": "S083_downstairs_vV03_r2.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Downstairs",
+      "repetition": 2,
+      "duration_s": 14.63,
+      "sample_count": 732,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T14:32:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S084",
+      "file": "S084_downstairs_vV03_r3.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Downstairs",
+      "repetition": 3,
+      "duration_s": 9.09,
+      "sample_count": 455,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T14:36:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S085",
+      "file": "S085_picking_object_vV03_r1.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Picking_Object",
+      "repetition": 1,
+      "duration_s": 4.46,
+      "sample_count": 223,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T14:40:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S086",
+      "file": "S086_picking_object_vV03_r2.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Picking_Object",
+      "repetition": 2,
+      "duration_s": 5.24,
+      "sample_count": 263,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T14:44:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S087",
+      "file": "S087_picking_object_vV03_r3.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Picking_Object",
+      "repetition": 3,
+      "duration_s": 4.25,
+      "sample_count": 213,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T14:48:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S088",
+      "file": "S088_fall_forward_vV03_r1.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Fall_Forward",
+      "repetition": 1,
+      "duration_s": 3.99,
+      "sample_count": 200,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T14:52:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S089",
+      "file": "S089_fall_forward_vV03_r2.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Fall_Forward",
+      "repetition": 2,
+      "duration_s": 3.77,
+      "sample_count": 189,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T14:56:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S090",
+      "file": "S090_fall_forward_vV03_r3.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Fall_Forward",
+      "repetition": 3,
+      "duration_s": 3.89,
+      "sample_count": 195,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T15:00:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S091",
+      "file": "S091_fall_forward_vV03_r4.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Fall_Forward",
+      "repetition": 4,
+      "duration_s": 3.25,
+      "sample_count": 163,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T15:04:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S092",
+      "file": "S092_fall_backward_vV03_r1.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Fall_Backward",
+      "repetition": 1,
+      "duration_s": 3.22,
+      "sample_count": 161,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T15:08:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S093",
+      "file": "S093_fall_backward_vV03_r2.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Fall_Backward",
+      "repetition": 2,
+      "duration_s": 3.13,
+      "sample_count": 157,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T15:12:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S094",
+      "file": "S094_fall_backward_vV03_r3.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Fall_Backward",
+      "repetition": 3,
+      "duration_s": 3.64,
+      "sample_count": 182,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T15:16:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S095",
+      "file": "S095_fall_backward_vV03_r4.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Fall_Backward",
+      "repetition": 4,
+      "duration_s": 3.49,
+      "sample_count": 175,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T15:20:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S096",
+      "file": "S096_fall_sideways_vV03_r1.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Fall_Sideways",
+      "repetition": 1,
+      "duration_s": 3.92,
+      "sample_count": 196,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T15:24:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S097",
+      "file": "S097_fall_sideways_vV03_r2.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Fall_Sideways",
+      "repetition": 2,
+      "duration_s": 3.08,
+      "sample_count": 155,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T15:28:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S098",
+      "file": "S098_fall_sideways_vV03_r3.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Fall_Sideways",
+      "repetition": 3,
+      "duration_s": 3.46,
+      "sample_count": 173,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T15:32:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    },
+    {
+      "session_id": "S099",
+      "file": "S099_fall_sideways_vV03_r4.csv",
+      "volunteer_id": "V03",
+      "activity_label": "Fall_Sideways",
+      "repetition": 4,
+      "duration_s": 3.71,
+      "sample_count": 186,
+      "sample_rate_hz": 50,
+      "recorded_at": "2026-03-01T15:36:00",
+      "device": "MPU6050 (prototype smartwatch)",
+      "units": {
+        "accel": "m/s\u00b2",
+        "gyro": "deg/s"
+      }
+    }
+  ]
+}
