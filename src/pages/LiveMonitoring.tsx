@@ -5,19 +5,10 @@ import { FallDetectionCard } from "@/components/live/FallDetectionCard";
 import { usePatientData } from "@/context/PatientDataContext";
 
 export default function LiveMonitoring() {
-  const { accel, gyro, fallDetected } = usePatientData();
-
-  // During an active fall, focus the alert — hide the extra status / chart boxes
-  if (fallDetected) {
-    return (
-      <div className="flex flex-col gap-5 pb-8 max-w-2xl">
-        <FallDetectionCard />
-      </div>
-    );
-  }
+  const { accel, gyro } = usePatientData();
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-3 gap-5 pb-8">
+    <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
       <div className="xl:col-span-1">
         <MotionStatusCard />
       </div>

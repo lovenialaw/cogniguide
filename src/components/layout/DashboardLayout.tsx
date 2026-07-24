@@ -66,7 +66,7 @@ export function DashboardLayout() {
 
       <div className="flex-1 min-w-0">
         <TopBar title={meta.title} subtitle={meta.subtitle} onMenuClick={() => setMobileOpen(true)} />
-        <main className="px-4 sm:px-6 lg:px-8 py-6 max-w-[1600px] mx-auto">
+        <main className="px-4 sm:px-6 lg:px-8 py-6 pb-28 max-w-[1600px] mx-auto">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}

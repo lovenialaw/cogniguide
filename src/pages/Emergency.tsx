@@ -87,16 +87,16 @@ export default function Emergency() {
                 </p>
                 <p className="text-white/80 text-sm mt-1">
                   {fallVerifyStatus === "confirmed"
-                    ? "Dual-verified fall — smartwatch + home ESP32 nodes agree"
-                    : "Dual-verified wandering — watch + home sensors agree"}
+                    ? `${patient.name} fell in ${room}`
+                    : `${patient.name} wandered at ${room}`}
                 </p>
               </div>
             </div>
             <button
               onClick={endEmergency}
-              className="rounded-2xl bg-white text-ink-900 font-bold px-5 py-3 text-sm hover:bg-white/90 transition-colors whitespace-nowrap"
+              className="rounded-2xl bg-white text-ink-900 font-bold px-5 py-3.5 text-sm hover:bg-white/90 transition-colors whitespace-nowrap w-full sm:w-auto"
             >
-              Mark as Resolved
+              Dismiss Alert
             </button>
           </div>
         </motion.div>
@@ -173,15 +173,15 @@ export default function Emergency() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {actions.map(({ label, icon: Icon, tone, onClick }) => (
             <button
               key={label}
               onClick={onClick}
-              className={`flex items-center justify-center gap-2 rounded-2xl text-white font-bold py-4 text-sm transition-colors shadow-md ${tone}`}
+              className={`flex items-center justify-center gap-2.5 rounded-2xl text-white font-bold min-h-[52px] px-4 py-3.5 text-sm transition-colors shadow-md ${tone}`}
             >
-              <Icon className="h-[18px] w-[18px]" />
-              {label}
+              <Icon className="h-[18px] w-[18px] shrink-0" />
+              <span className="text-center leading-snug">{label}</span>
             </button>
           ))}
         </div>

@@ -53,7 +53,7 @@ export function WifiNodeMap({ onNodesChange, onMotionEvent }: WifiNodeMapProps) 
           room: n.room,
           state: n.state,
           intensity: n.intensity,
-          message: `${n.state === "strong" ? "Strong motion" : "Motion"} — ${n.room}`,
+          message: `Motion — ${n.room}`,
           timestamp: new Date(),
         });
       }
@@ -87,22 +87,32 @@ export function WifiNodeMap({ onNodesChange, onMotionEvent }: WifiNodeMapProps) 
   return (
     <div
       ref={mapRef}
-      className="relative min-h-[320px] sm:min-h-[380px] aspect-[16/10] rounded-2xl border border-brand-100 bg-gradient-to-br from-ink-50 via-brand-50/30 to-mint-50 overflow-hidden select-none touch-none"
+      className="relative w-full h-[min(220px,36vh)] sm:h-[min(260px,40vh)] rounded-2xl border border-brand-200/80 bg-gradient-to-br from-ink-50 via-brand-50/30 to-mint-50 overflow-hidden select-none touch-none"
     >
       <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-30" aria-hidden>
         <defs>
-          <pattern id="wifi-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(20,135,245,0.16)" strokeWidth="1" />
+          <pattern id="wifi-grid" width="48" height="48" patternUnits="userSpaceOnUse">
+            <path d="M 48 0 L 0 0 0 48" fill="none" stroke="rgba(20,135,245,0.14)" strokeWidth="1" />
           </pattern>
         </defs>
         <rect width="100%" height="100%" fill="url(#wifi-grid)" />
       </svg>
 
-      {/* Soft room zones — no crowded labels on the map */}
-      <div className="absolute left-[8%] top-[8%] h-[34%] w-[38%] rounded-2xl bg-white/25 pointer-events-none" />
-      <div className="absolute right-[8%] top-[8%] h-[34%] w-[38%] rounded-2xl bg-white/25 pointer-events-none" />
-      <div className="absolute left-[8%] bottom-[10%] h-[34%] w-[38%] rounded-2xl bg-white/25 pointer-events-none" />
-      <div className="absolute right-[8%] bottom-[10%] h-[34%] w-[38%] rounded-2xl bg-white/25 pointer-events-none" />
+      {/* Quiet room labels only — corners */}
+      {[
+        { name: "Living", x: 16, y: 12 },
+        { name: "Kitchen", x: 84, y: 12 },
+        { name: "Bedroom", x: 16, y: 88 },
+        { name: "Bath", x: 84, y: 88 },
+      ].map((r) => (
+        <span
+          key={r.name}
+          className="absolute -translate-x-1/2 -translate-y-1/2 text-[10px] font-semibold text-ink-300/80 pointer-events-none"
+          style={{ left: `${r.x}%`, top: `${r.y}%` }}
+        >
+          {r.name}
+        </span>
+      ))}
 
       {blob && (
         <motion.div
@@ -110,10 +120,7 @@ export function WifiNodeMap({ onNodesChange, onMotionEvent }: WifiNodeMapProps) 
           transition={{ type: "tween", duration: 0.25, ease: "linear" }}
           className="absolute z-[5] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
         >
-          <div className="relative h-20 w-20">
-            <span className="absolute inset-0 rounded-full bg-brand-500/20 blur-md" />
-            <span className="absolute inset-4 rounded-full bg-brand-500/20 animate-pulse-slow" />
-          </div>
+          <div className="relative h-20 w-20 rounded-full bg-brand-500/15 blur-[1px]" />
         </motion.div>
       )}
 
@@ -122,7 +129,7 @@ export function WifiNodeMap({ onNodesChange, onMotionEvent }: WifiNodeMapProps) 
         transition={{ type: "tween", duration: 0.08, ease: "linear" }}
         className="absolute z-[6] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
       >
-        <span className="flex h-3 w-3 rounded-full bg-ink-800 ring-2 ring-white shadow" title={`Patient · ${room}`} />
+        <span className="flex h-3 w-3 rounded-full bg-ink-800 ring-2 ring-white shadow" title={room} />
       </motion.div>
 
       {liveNodes.map((node) => {
@@ -142,13 +149,13 @@ export function WifiNodeMap({ onNodesChange, onMotionEvent }: WifiNodeMapProps) 
             )}
             style={{ left: `${node.x}%`, top: `${node.y}%` }}
           >
-            <div className="relative flex flex-col items-center">
+            <div className="relative flex flex-col items-center gap-1">
               <span
                 className={cn("absolute rounded-full blur-md transition-all duration-300", style.glow)}
                 style={{
                   width: glowSize,
                   height: glowSize,
-                  top: "50%",
+                  top: "40%",
                   left: "50%",
                   transform: "translate(-50%, -50%)",
                 }}
@@ -159,27 +166,15 @@ export function WifiNodeMap({ onNodesChange, onMotionEvent }: WifiNodeMapProps) 
                   style.ring
                 )}
               >
-                <span className="relative h-2 w-2 rounded-full bg-ink-700" />
+                <span className="h-2 w-2 rounded-full bg-ink-700" />
               </div>
-              <p className="mt-1.5 rounded-md bg-white/95 px-2 py-0.5 text-[11px] font-bold text-ink-800 shadow-sm border border-ink-100">
+              <span className="rounded-md bg-white/95 px-1.5 py-0.5 text-[10px] font-bold text-ink-700 shadow-sm border border-ink-100">
                 {node.label}
-              </p>
+              </span>
             </div>
           </div>
         );
       })}
-
-      <div className="absolute bottom-3 left-3 right-3 flex justify-center gap-4 text-[11px] font-semibold text-ink-400 pointer-events-none">
-        <span className="flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-mint-500" /> quiet
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-amber-glow" /> motion
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-danger" /> strong
-        </span>
-      </div>
     </div>
   );
 }

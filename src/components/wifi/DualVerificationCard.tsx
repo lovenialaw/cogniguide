@@ -7,7 +7,7 @@ function StatusPill({ status }: { status: DualVerifyStatus }) {
   if (status === "confirmed") {
     return (
       <span className="inline-flex items-center gap-1 rounded-full bg-mint-500/15 px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-wide text-mint-700">
-        <CheckCircle2 className="h-3.5 w-3.5" /> Confirmed
+        <CheckCircle2 className="h-3.5 w-3.5" /> Verified
       </span>
     );
   }
@@ -46,13 +46,13 @@ function VoteCard({
   return (
     <div
       className={cn(
-        "rounded-2xl border px-4 py-3.5",
+        "rounded-2xl border px-4 py-3",
         agreed === true && "border-mint-400/50 bg-mint-500/8",
         agreed === false && "border-ink-100 bg-ink-50",
         agreed === null && "border-amber-glow/40 bg-amber-glow/8"
       )}
     >
-      <div className="flex items-center gap-2 mb-1.5">
+      <div className="flex items-center gap-2 mb-1">
         <span className="text-ink-500">{icon}</span>
         <p className="text-xs font-bold text-ink-700">{title}</p>
         <span
@@ -98,28 +98,19 @@ export function DualVerificationCard({
           : "idle";
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <p className="font-display font-bold text-ink-900">Dual verification</p>
-          <p className="text-xs text-ink-400 mt-0.5">
-            Alert caregivers only when watch + home nodes both agree
-          </p>
-        </div>
+    <div>
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <p className="font-display font-bold text-ink-900">Dual verification</p>
         <StatusPill status={overall} />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
         <VoteCard
           title="Smartwatch"
           icon={<Smartphone className="h-4 w-4" />}
           agreed={fallDetected || wanderingAlert ? true : active ? null : false}
           detail={
-            fallDetected
-              ? "Fall pattern detected"
-              : wanderingAlert
-                ? "Possible exit flagged"
-                : "No emergency event"
+            fallDetected ? "Fall pattern detected" : wanderingAlert ? "Exit flagged" : "No event"
           }
         />
         <VoteCard
@@ -131,20 +122,20 @@ export function DualVerificationCard({
           detail={
             fallDetected
               ? overall === "confirmed"
-                ? `${nearest?.label ?? "Node"} confirms stillness`
-                : "Checking stillness…"
+                ? `${nearest?.label ?? "Node"} still`
+                : "Confirming stillness…"
               : wanderingAlert
                 ? overall === "confirmed"
-                  ? `${nearest?.label ?? "Node"} confirms near exit`
-                  : "Checking exit-side signal…"
-                : "Monitoring watch signal"
+                  ? `${nearest?.label ?? "Node"} near exit`
+                  : "Confirming exit…"
+                : "Nodes 1–4 idle"
           }
         />
       </div>
 
       <div
         className={cn(
-          "rounded-2xl px-4 py-3.5 text-sm font-semibold",
+          "rounded-2xl px-4 py-3 text-sm font-semibold",
           caregiverAlertSent
             ? "bg-danger/10 border border-danger/25 text-danger-dark"
             : overall === "pending"
@@ -153,10 +144,10 @@ export function DualVerificationCard({
         )}
       >
         {caregiverAlertSent
-          ? "Caregiver alert sent — both sides agreed."
+          ? "Alert sent to caregivers."
           : overall === "pending"
-            ? "Waiting on home nodes — no caregiver alert yet."
-            : "No dual-verified emergency."}
+            ? "Waiting for home nodes — no caregiver alert yet."
+            : "Alerts only when watch + nodes agree."}
       </div>
     </div>
   );

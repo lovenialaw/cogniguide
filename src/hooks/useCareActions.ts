@@ -37,7 +37,7 @@ export function useCareActions() {
   const notifyCaregiverOfAlert = useCallback(() => {
     if ((fallDetected || wanderingAlert) && !dualVerified) {
       showToast(
-        "Hold: home ESP32 nodes have not confirmed yet — caregiver alert blocked until both sensors agree.",
+        "Hold: home nodes have not confirmed yet — no caregiver alert until both agree.",
         "info"
       );
       return;
@@ -47,7 +47,7 @@ export function useCareActions() {
     if (fallVerifyStatus === "confirmed") {
       summary = `${patient.name} fell in ${room}`;
     } else if (wanderVerifyStatus === "confirmed") {
-      summary = `${patient.name} wandered at ${geofence === "Outside Home" || geofence === "Near Exit" ? geofence : room}`;
+      summary = `${patient.name} wandered at ${room}`;
     } else {
       summary = `${patient.name} needs attention — last seen in ${room}`;
     }
@@ -61,7 +61,6 @@ export function useCareActions() {
     wanderVerifyStatus,
     patient.name,
     room,
-    geofence,
     showToast,
   ]);
 

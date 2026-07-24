@@ -99,17 +99,15 @@ export function ChatAssistant() {
             transition={{ type: "spring", stiffness: 380, damping: 28 }}
             className={cn(
               "fixed z-50 flex flex-col overflow-hidden glass-card shadow-glass-lg border border-white/60",
-              "left-3 right-3 sm:left-auto sm:right-6",
-              "bottom-[calc(5.5rem+env(safe-area-inset-bottom,0px))] sm:bottom-24",
-              "w-auto sm:w-[380px] max-w-[calc(100vw-1.5rem)]",
-              "h-[min(520px,calc(100dvh-8.5rem-env(safe-area-inset-bottom,0px)))] max-h-[calc(100dvh-8.5rem)]",
-              "rounded-3xl"
+              "left-4 right-4 sm:left-auto sm:right-6 sm:w-[320px]",
+              "bottom-[max(4.75rem,calc(env(safe-area-inset-bottom)+4rem))]",
+              "h-[min(360px,calc(100dvh-8.5rem))] max-h-[min(360px,calc(100dvh-8.5rem))] rounded-2xl"
             )}
           >
             {/* Header */}
-            <div className="flex items-center gap-3 border-b border-ink-100/80 px-4 py-3.5 bg-gradient-to-r from-brand-500/8 to-mint-500/8">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500 to-mint-500 text-white shadow-glow-brand">
-                <Bot className="h-5 w-5" />
+            <div className="flex items-center gap-2.5 border-b border-ink-100/80 px-3 py-2.5 bg-gradient-to-r from-brand-500/8 to-mint-500/8 shrink-0">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-mint-500 text-white shadow-glow-brand">
+                <Bot className="h-4 w-4" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-display font-bold text-ink-900 text-sm flex items-center gap-1.5">
@@ -217,7 +215,8 @@ export function ChatAssistant() {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         className={cn(
-          "fixed z-50 bottom-[calc(1.25rem+env(safe-area-inset-bottom,0px))] right-3 sm:right-6 flex h-14 w-14 items-center justify-center rounded-2xl text-white shadow-glass-lg transition-colors",
+          "fixed z-50 flex h-14 w-14 items-center justify-center rounded-2xl text-white shadow-glass-lg transition-colors",
+          "right-4 sm:right-6 bottom-[max(1.25rem,calc(env(safe-area-inset-bottom)+0.75rem))]",
           open ? "bg-ink-700" : "bg-gradient-to-br from-brand-500 to-mint-500 shadow-glow-brand",
           hasUrgent && !open && "animate-pulse-slow ring-4 ring-danger/30"
         )}

@@ -110,7 +110,7 @@ export default function App() {
         await showLocalAlert({
           type: "cogniguide_alert",
           title: "COGNIGUIDE ready",
-          body: "Care alerts are enabled. Fall, wandering, and strong WiFi motion will notify you.",
+          body: "Care alerts on. You'll see messages like “Eleanor Whitfield fell in Living Room”.",
           severity: "low",
           category: "general",
           timestamp: new Date().toISOString(),

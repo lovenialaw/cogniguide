@@ -31,12 +31,12 @@ export interface NodeMotionEvent {
   timestamp: Date;
 }
 
-/** Four home Wi‑Fi nodes — RSSI from the smartwatch is used for indoor localization. */
+/** Four home Wi-Fi nodes — RSSI from the smartwatch is used for indoor localization. */
 export const DEFAULT_WIFI_NODES: WifiNode[] = [
-  { id: "node-1", label: "Node 1", room: "Living Room", x: 24, y: 26, frequencyHz: 24 },
-  { id: "node-2", label: "Node 2", room: "Kitchen", x: 76, y: 26, frequencyHz: 24 },
-  { id: "node-3", label: "Node 3", room: "Bedroom", x: 24, y: 74, frequencyHz: 24 },
-  { id: "node-4", label: "Node 4", room: "Bathroom", x: 76, y: 74, frequencyHz: 24 },
+  { id: "Node 1", label: "Node 1", room: "Living Room", x: 22, y: 24, frequencyHz: 24 },
+  { id: "Node 2", label: "Node 2", room: "Kitchen", x: 78, y: 24, frequencyHz: 24 },
+  { id: "Node 3", label: "Node 3", room: "Bedroom", x: 22, y: 76, frequencyHz: 24 },
+  { id: "Node 4", label: "Node 4", room: "Bathroom", x: 78, y: 76, frequencyHz: 24 },
 ];
 
 export type DualVerifyStatus = "idle" | "pending" | "confirmed" | "watch_only";
@@ -157,31 +157,30 @@ export function seedMotionLogEvents(now = new Date()): NodeMotionEvent[] {
     state: NodeMotionState;
     intensity: number;
   }> = [
-    { minutesAgo: 2, nodeId: "node-1", room: "Living Room", state: "motion", intensity: 2.1 },
-    { minutesAgo: 18, nodeId: "node-2", room: "Kitchen", state: "strong", intensity: 2.9 },
-    { minutesAgo: 35, nodeId: "node-3", room: "Bedroom", state: "motion", intensity: 1.7 },
-    { minutesAgo: 55, nodeId: "node-4", room: "Bathroom", state: "motion", intensity: 2.0 },
-    { minutesAgo: 90, nodeId: "node-1", room: "Living Room", state: "strong", intensity: 3.1 },
-    { minutesAgo: 220, nodeId: "node-2", room: "Kitchen", state: "motion", intensity: 2.2 },
-    { minutesAgo: 480, nodeId: "node-3", room: "Bedroom", state: "motion", intensity: 1.6 },
-    { minutesAgo: 720, nodeId: "node-1", room: "Living Room", state: "motion", intensity: 2.0 },
-    { minutesAgo: 1440 + 60, nodeId: "node-2", room: "Kitchen", state: "strong", intensity: 2.7 },
-    { minutesAgo: 1440 + 300, nodeId: "node-4", room: "Bathroom", state: "motion", intensity: 1.8 },
-    { minutesAgo: 1440 * 2 + 90, nodeId: "node-1", room: "Living Room", state: "motion", intensity: 2.3 },
-    { minutesAgo: 1440 * 3 + 200, nodeId: "node-3", room: "Bedroom", state: "motion", intensity: 1.7 },
+    { minutesAgo: 2, nodeId: "Node 1", room: "Living Room", state: "motion", intensity: 2.1 },
+    { minutesAgo: 18, nodeId: "Node 2", room: "Kitchen", state: "strong", intensity: 2.9 },
+    { minutesAgo: 35, nodeId: "Node 3", room: "Bedroom", state: "motion", intensity: 1.7 },
+    { minutesAgo: 55, nodeId: "Node 4", room: "Bathroom", state: "motion", intensity: 2.0 },
+    { minutesAgo: 90, nodeId: "Node 1", room: "Living Room", state: "strong", intensity: 3.1 },
+    { minutesAgo: 220, nodeId: "Node 2", room: "Kitchen", state: "motion", intensity: 2.2 },
+    { minutesAgo: 480, nodeId: "Node 3", room: "Bedroom", state: "motion", intensity: 1.6 },
+    { minutesAgo: 720, nodeId: "Node 1", room: "Living Room", state: "motion", intensity: 2.0 },
+    { minutesAgo: 1440 + 60, nodeId: "Node 2", room: "Kitchen", state: "strong", intensity: 2.7 },
+    { minutesAgo: 1440 + 300, nodeId: "Node 4", room: "Bathroom", state: "motion", intensity: 1.8 },
+    { minutesAgo: 1440 * 2 + 90, nodeId: "Node 1", room: "Living Room", state: "motion", intensity: 2.3 },
+    { minutesAgo: 1440 * 3 + 200, nodeId: "Node 3", room: "Bedroom", state: "motion", intensity: 1.7 },
   ];
 
   return samples.map((s, i) => {
     const timestamp = new Date(now.getTime() - s.minutesAgo * 60_000);
-    const label = s.nodeId.replace("node-", "Node ");
     return {
       id: `seed-${i}-${s.nodeId}`,
       nodeId: s.nodeId,
-      nodeLabel: label,
+      nodeLabel: s.nodeId,
       room: s.room,
       state: s.state,
       intensity: s.intensity,
-      message: `${s.state === "strong" ? "Strong motion" : "Motion"} — ${s.room}`,
+      message: `${s.state === "strong" ? "Strong CSI motion" : "CSI motion"} — ${s.room}`,
       timestamp,
     };
   });
