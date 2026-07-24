@@ -37,12 +37,12 @@ export function WifiNodeRoomCards({
   return (
     <div>
       <div className="mb-3">
-        <p className="font-display font-bold text-ink-900">Rooms</p>
+        <p className="font-display font-bold text-ink-900">ESP32 home nodes</p>
         <p className="text-xs text-ink-400 mt-0.5">
-          One node per room covers the home — tap a name to edit
+          Four nodes monitor smartwatch Wi-Fi RSSI — tap a room name to edit
         </p>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {nodes.map((node) => {
           const meta = STATE_META[node.state];
           const isEditing = editingId === node.id;
@@ -63,7 +63,7 @@ export function WifiNodeRoomCards({
                   {node.id}
                 </span>
                 <span className={cn("rounded-full px-2 py-0.5 text-[10px] font-bold uppercase", meta.badge)}>
-                  {meta.label} {node.intensity.toFixed(1)}x
+                  {meta.label}
                 </span>
               </div>
               {isEditing ? (
@@ -84,7 +84,7 @@ export function WifiNodeRoomCards({
               )}
               <p className="text-[11px] text-ink-400 mt-1 flex items-center gap-1">
                 <Wifi className="h-3 w-3" />
-                {node.frequencyHz} Hz CSI probe
+                RSSI {node.rssiDbm} dBm
               </p>
             </button>
           );

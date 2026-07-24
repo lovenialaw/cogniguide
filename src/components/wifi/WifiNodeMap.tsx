@@ -206,7 +206,7 @@ export function WifiNodeMap({ onNodesChange, onMotionEvent }: WifiNodeMapProps) 
               <div className="mt-1.5 rounded-lg bg-white/90 px-1.5 py-0.5 text-center shadow-sm border border-ink-100">
                 <p className="text-[11px] font-extrabold text-ink-800 leading-none">{node.id}</p>
                 <p className={cn("text-[10px] font-bold leading-tight", style.text)}>
-                  {node.intensity.toFixed(1)}x · {node.frequencyHz}Hz
+                  {node.rssiDbm} dBm · {style.label}
                 </p>
               </div>
             </div>
@@ -215,7 +215,7 @@ export function WifiNodeMap({ onNodesChange, onMotionEvent }: WifiNodeMapProps) 
       })}
 
       <div className="absolute bottom-3 left-3 right-3 flex flex-wrap items-end justify-between gap-2 text-[11px] text-ink-400">
-        <p>Node glow shows the motion that node sees. Blob marks the activity zone.</p>
+        <p>ESP32 nodes read smartwatch Wi-Fi RSSI. Glow = CSI motion. Blob = estimated location.</p>
         <div className="flex items-center gap-3 font-semibold">
           <span className="flex items-center gap-1.5">
             <span className="h-2 w-2 rounded-full bg-mint-500" /> quiet

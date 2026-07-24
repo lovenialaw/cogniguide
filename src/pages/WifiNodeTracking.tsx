@@ -1,19 +1,36 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Antenna, RadioTower, Sparkles } from "lucide-react";
 import { GlassCard, CardHeader } from "@/components/ui/GlassCard";
 import { WifiNodeMap } from "@/components/wifi/WifiNodeMap";
 import { WifiNodeRoomCards } from "@/components/wifi/WifiNodeRoomCards";
 import { WifiMotionLog } from "@/components/wifi/WifiMotionLog";
-import { WanderingAlertCard } from "@/components/location/WanderingAlertCard";
+import { DualVerificationCard } from "@/components/wifi/DualVerificationCard";
 import type { NodeMotionEvent, WifiNodeLive } from "@/lib/wifiNodes";
-import { DEFAULT_WIFI_NODES, seedMotionLogEvents } from "@/lib/wifiNodes";
-import { sendCareAlert } from "@/lib/nativeBridge";
+import {
+  DEFAULT_WIFI_NODES,
+  seedMotionLogEvents,
+  verifyFallConsensus,
+  verifyWanderingConsensus,
+} from "@/lib/wifiNodes";
 import { usePatientData } from "@/context/PatientDataContext";
 
 export default function WifiNodeTracking() {
-  const { patient, wanderingAlert, simulateWandering } = usePatientData();
+  const {
+    room,
+    geofence,
+    patientPosition,
+    isLocationMoving,
+    fallDetected,
+    wanderingAlert,
+  } = usePatientData();
+
   const [nodes, setNodes] = useState<WifiNodeLive[]>(() =>
-    DEFAULT_WIFI_NODES.map((n) => ({ ...n, intensity: 1, state: "quiet" as const }))
+    DEFAULT_WIFI_NODES.map((n) => ({
+      ...n,
+      intensity: 1,
+      state: "quiet" as const,
+      rssiDbm: -55,
+    }))
   );
   const [roomOverrides, setRoomOverrides] = useState<Record<string, string>>({});
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -26,6 +43,30 @@ export default function WifiNodeTracking() {
 
   const activeCount = displayNodes.filter((n) => n.state !== "quiet").length;
 
+  const fallStatus = useMemo(
+    () =>
+      verifyFallConsensus({
+        fallDetected,
+        isMoving: isLocationMoving,
+        nodes: displayNodes,
+      }),
+    [fallDetected, isLocationMoving, displayNodes]
+  );
+
+  const wanderStatus = useMemo(
+    () =>
+      verifyWanderingConsensus({
+        wanderingAlert: !!wanderingAlert,
+        geofence,
+        room,
+        nodes: displayNodes,
+        patientPos: patientPosition,
+      }),
+    [wanderingAlert, geofence, room, displayNodes, patientPosition]
+  );
+
+  const caregiverAlertSent = fallStatus === "confirmed" || wanderStatus === "confirmed";
+
   const onNodesChange = useCallback((next: WifiNodeLive[]) => {
     setNodes(next);
   }, []);
@@ -33,34 +74,20 @@ export default function WifiNodeTracking() {
   const onMotionEvent = useCallback(
     (evt: NodeMotionEvent) => {
       const roomName = roomOverrides[evt.nodeId] ?? evt.room;
-      const nextEvt = {
-        ...evt,
-        room: roomName,
-        message: `${evt.state === "strong" ? "Strong motion" : "Motion"} detected — ${roomName}`,
-      };
-      setEvents((prev) => [nextEvt, ...prev].slice(0, 80));
-
-      if (evt.state === "strong") {
-        void sendCareAlert({
-          title: "WiFi Node — Strong Motion",
-          body: `${patient.name}: strong presence at ${roomName} (${evt.nodeId}).`,
-          severity: "medium",
-          category: "wifi_motion",
-        });
-      }
+      setEvents((prev) =>
+        [
+          {
+            ...evt,
+            room: roomName,
+            message: `${evt.state === "strong" ? "Strong CSI motion" : "CSI motion"} — ${roomName}`,
+          },
+          ...prev,
+        ].slice(0, 80)
+      );
+      // No caregiver push on raw node motion — only dual-verified fall/wandering
     },
-    [roomOverrides, patient.name]
+    [roomOverrides]
   );
-
-  const handleSimulateWandering = () => {
-    simulateWandering();
-    void sendCareAlert({
-      title: "⚠ Wandering Alert",
-      body: `${patient.name} may be leaving the safe zone. WiFi nodes tracking path toward exit.`,
-      severity: "medium",
-      category: "wandering",
-    });
-  };
 
   return (
     <div className="flex flex-col gap-5">
@@ -76,39 +103,46 @@ export default function WifiNodeTracking() {
             </span>
           </div>
           <p className="text-sm text-ink-400">
-            Passive Wi-Fi CSI nodes detect elderly presence in every room — no wearables required
+            Four ESP32 nodes read smartwatch Wi-Fi RSSI for indoor location — caregiver alerts need dual verification
           </p>
         </div>
       </div>
 
-      <WanderingAlertCard />
+      <GlassCard
+        className="p-5"
+        glow={fallStatus === "confirmed" || wanderStatus === "confirmed" ? "danger" : "none"}
+      >
+        <DualVerificationCard
+          fallStatus={fallStatus}
+          wanderStatus={wanderStatus}
+          fallDetected={fallDetected}
+          wanderingAlert={!!wanderingAlert}
+          nodes={displayNodes}
+          caregiverAlertSent={caregiverAlertSent}
+        />
+      </GlassCard>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
-        <GlassCard className="p-5 xl:col-span-2" glow={wanderingAlert ? "danger" : "brand"}>
+        <GlassCard className="p-5 xl:col-span-2" glow={wanderingAlert || fallDetected ? "danger" : "brand"}>
           <CardHeader
             icon={<Antenna className="h-5 w-5" />}
-            title="Node coverage map"
+            title="ESP32 RSSI coverage map"
             subtitle={
-              wanderingAlert
-                ? "Wandering active — patient moving toward exit · watch Near Exit (N6)"
-                : "Drag nodes to match your floor plan"
+              fallDetected
+                ? fallStatus === "confirmed"
+                  ? "Dual-verified fall — nodes confirmed stillness after impact"
+                  : "Watch fall flagged — waiting for ESP32 stillness confirmation"
+                : wanderingAlert
+                  ? wanderStatus === "confirmed"
+                    ? "Dual-verified wandering — watch + nodes agree"
+                    : "Watch flagged exit — waiting for ESP32 RSSI confirmation"
+                  : "Drag nodes to match your floor plan"
             }
             action={
-              <div className="flex items-center gap-2">
-                {!wanderingAlert && (
-                  <button
-                    type="button"
-                    onClick={handleSimulateWandering}
-                    className="text-[11px] font-semibold text-ink-400 hover:text-danger border border-ink-200 hover:border-danger/40 rounded-full px-3 py-1.5 transition-colors"
-                  >
-                    Simulate Wandering
-                  </button>
-                )}
-                <span className="flex items-center gap-1.5 rounded-full bg-mint-500/10 px-2.5 py-1 text-[11px] font-bold text-mint-700">
-                  <Sparkles className="h-3.5 w-3.5" />
-                  {activeCount} active
-                </span>
-              </div>
+              <span className="flex items-center gap-1.5 rounded-full bg-mint-500/10 px-2.5 py-1 text-[11px] font-bold text-mint-700">
+                <Sparkles className="h-3.5 w-3.5" />
+                {activeCount} active
+              </span>
             }
           />
           <WifiNodeMap onNodesChange={onNodesChange} onMotionEvent={onMotionEvent} />

@@ -1,4 +1,5 @@
 import type { PatientPosition } from "@/lib/locationSimulation";
+import type { GeofenceState, RoomName } from "@/types";
 
 export type NodeMotionState = "quiet" | "motion" | "strong";
 
@@ -8,12 +9,15 @@ export interface WifiNode {
   room: string;
   x: number;
   y: number;
+  /** Simulated Wi-Fi RSSI of the smartwatch as seen by this ESP32 (dBm) */
   frequencyHz: number;
 }
 
 export interface WifiNodeLive extends WifiNode {
   intensity: number;
   state: NodeMotionState;
+  /** Estimated RSSI from smartwatch → this ESP32 node */
+  rssiDbm: number;
 }
 
 export interface NodeMotionEvent {
@@ -27,20 +31,26 @@ export interface NodeMotionEvent {
   timestamp: Date;
 }
 
+/** Four ESP32 home nodes — RSSI from the smartwatch is used for indoor localization. */
 export const DEFAULT_WIFI_NODES: WifiNode[] = [
-  { id: "N1", label: "Node 1", room: "Living Room", x: 22, y: 24, frequencyHz: 24 },
-  { id: "N2", label: "Node 2", room: "Kitchen", x: 78, y: 24, frequencyHz: 24 },
-  { id: "N3", label: "Node 3", room: "Bedroom", x: 22, y: 76, frequencyHz: 24 },
-  { id: "N4", label: "Node 4", room: "Bathroom", x: 78, y: 76, frequencyHz: 24 },
-  { id: "N5", label: "Node 5", room: "Hallway", x: 50, y: 52, frequencyHz: 24 },
-  { id: "N6", label: "Node 6", room: "Near Exit", x: 50, y: 12, frequencyHz: 24 },
+  { id: "ESP32-1", label: "ESP32-1", room: "Living Room", x: 24, y: 26, frequencyHz: 24 },
+  { id: "ESP32-2", label: "ESP32-2", room: "Kitchen", x: 76, y: 26, frequencyHz: 24 },
+  { id: "ESP32-3", label: "ESP32-3", room: "Bedroom", x: 24, y: 74, frequencyHz: 24 },
+  { id: "ESP32-4", label: "ESP32-4", room: "Bathroom", x: 76, y: 74, frequencyHz: 24 },
 ];
 
+export type DualVerifyStatus = "idle" | "pending" | "confirmed" | "watch_only";
+
 export function intensityFromDistance(distance: number, moving: boolean): number {
-  // Closer nodes see stronger motion. Moving amplifies the signal.
   const base = Math.max(0, 1 - distance / 42);
   const amp = moving ? 1.35 : 0.75;
   return Math.min(3.5, +(base * amp * 3.2 + 0.85).toFixed(2));
+}
+
+/** Map distance to RSSI (closer = stronger / less negative). */
+export function rssiFromDistance(distance: number): number {
+  // ~ -40 dBm at node, ~ -85 dBm across the home
+  return Math.round(Math.min(-38, Math.max(-88, -40 - distance * 0.7)));
 }
 
 export function stateFromIntensity(intensity: number): NodeMotionState {
@@ -59,19 +69,69 @@ export function computeLiveNodes(
   moving: boolean
 ): WifiNodeLive[] {
   return nodes.map((node) => {
-    const intensity = intensityFromDistance(distance(patient, node), moving);
+    const d = distance(patient, node);
+    const intensity = intensityFromDistance(d, moving);
     return {
       ...node,
       intensity,
-      state: stateFromIntensity(intensity),
+      // CSI motion state tracks movement; RSSI stays distance-based for localization
+      state: moving ? stateFromIntensity(intensity) : "quiet",
+      rssiDbm: rssiFromDistance(d),
     };
   });
 }
 
-/** Weighted centroid of nodes that currently see motion — the activity blob. */
+export function strongestNode(nodes: WifiNodeLive[]): WifiNodeLive | null {
+  if (nodes.length === 0) return null;
+  return [...nodes].sort((a, b) => b.rssiDbm - a.rssiDbm)[0];
+}
+
+/**
+ * Fall dual-verify:
+ * Watch reports fall → home ESP32 nodes confirm the patient stays motionless
+ * (low CSI motion / quiet nearest node) before caregivers are alerted.
+ */
+export function verifyFallConsensus(opts: {
+  fallDetected: boolean;
+  isMoving: boolean;
+  nodes: WifiNodeLive[];
+}): DualVerifyStatus {
+  if (!opts.fallDetected) return "idle";
+  const nearest = strongestNode(opts.nodes);
+  if (!nearest) return "watch_only";
+
+  // Nodes agree the wearer is still after impact (all CSI quiet)
+  const nodesSeeStillness = !opts.isMoving && opts.nodes.every((n) => n.state === "quiet");
+  return nodesSeeStillness ? "confirmed" : "pending";
+}
+
+/**
+ * Wandering dual-verify:
+ * Watch / geofence flags departure → home nodes must also see presence near the
+ * exit side of the home (strong RSSI while geofence is Near Exit / Outside).
+ */
+export function verifyWanderingConsensus(opts: {
+  wanderingAlert: boolean;
+  geofence: GeofenceState;
+  room: RoomName;
+  nodes: WifiNodeLive[];
+  patientPos: PatientPosition;
+}): DualVerifyStatus {
+  if (!opts.wanderingAlert) return "idle";
+  const nearest = strongestNode(opts.nodes);
+  if (!nearest) return "watch_only";
+
+  const exitSide = opts.geofence !== "Inside Home" || opts.patientPos.y < 28;
+  const nodesSeePresence = nearest.state !== "quiet" || nearest.rssiDbm > -62;
+  return exitSide && nodesSeePresence ? "confirmed" : "pending";
+}
+
 export function activityCentroid(nodes: WifiNodeLive[]): PatientPosition | null {
   const active = nodes.filter((n) => n.state !== "quiet");
-  if (active.length === 0) return null;
+  if (active.length === 0) {
+    const nearest = strongestNode(nodes);
+    return nearest ? { x: nearest.x, y: nearest.y } : null;
+  }
 
   let wx = 0;
   let wy = 0;
@@ -89,7 +149,6 @@ export function clampPercent(v: number): number {
   return Math.min(92, Math.max(8, v));
 }
 
-/** Seed historical motion events across recent hours/days for log filtering. */
 export function seedMotionLogEvents(now = new Date()): NodeMotionEvent[] {
   const samples: Array<{
     minutesAgo: number;
@@ -98,24 +157,18 @@ export function seedMotionLogEvents(now = new Date()): NodeMotionEvent[] {
     state: NodeMotionState;
     intensity: number;
   }> = [
-    { minutesAgo: 2, nodeId: "N1", room: "Living Room", state: "motion", intensity: 2.1 },
-    { minutesAgo: 8, nodeId: "N5", room: "Hallway", state: "motion", intensity: 1.9 },
-    { minutesAgo: 18, nodeId: "N2", room: "Kitchen", state: "strong", intensity: 2.9 },
-    { minutesAgo: 35, nodeId: "N3", room: "Bedroom", state: "motion", intensity: 1.7 },
-    { minutesAgo: 55, nodeId: "N4", room: "Bathroom", state: "motion", intensity: 2.0 },
-    { minutesAgo: 90, nodeId: "N1", room: "Living Room", state: "strong", intensity: 3.1 },
-    { minutesAgo: 140, nodeId: "N5", room: "Hallway", state: "motion", intensity: 1.8 },
-    { minutesAgo: 220, nodeId: "N6", room: "Near Exit", state: "strong", intensity: 2.8 },
-    { minutesAgo: 360, nodeId: "N2", room: "Kitchen", state: "motion", intensity: 2.2 },
-    { minutesAgo: 480, nodeId: "N3", room: "Bedroom", state: "motion", intensity: 1.6 },
-    { minutesAgo: 720, nodeId: "N1", room: "Living Room", state: "motion", intensity: 2.0 },
-    { minutesAgo: 1080, nodeId: "N5", room: "Hallway", state: "motion", intensity: 1.9 },
-    { minutesAgo: 1440 + 60, nodeId: "N2", room: "Kitchen", state: "strong", intensity: 2.7 },
-    { minutesAgo: 1440 + 300, nodeId: "N4", room: "Bathroom", state: "motion", intensity: 1.8 },
-    { minutesAgo: 1440 * 2 + 90, nodeId: "N1", room: "Living Room", state: "motion", intensity: 2.3 },
-    { minutesAgo: 1440 * 3 + 200, nodeId: "N3", room: "Bedroom", state: "motion", intensity: 1.7 },
-    { minutesAgo: 1440 * 5 + 40, nodeId: "N6", room: "Near Exit", state: "strong", intensity: 3.0 },
-    { minutesAgo: 1440 * 6 + 180, nodeId: "N5", room: "Hallway", state: "motion", intensity: 2.1 },
+    { minutesAgo: 2, nodeId: "ESP32-1", room: "Living Room", state: "motion", intensity: 2.1 },
+    { minutesAgo: 18, nodeId: "ESP32-2", room: "Kitchen", state: "strong", intensity: 2.9 },
+    { minutesAgo: 35, nodeId: "ESP32-3", room: "Bedroom", state: "motion", intensity: 1.7 },
+    { minutesAgo: 55, nodeId: "ESP32-4", room: "Bathroom", state: "motion", intensity: 2.0 },
+    { minutesAgo: 90, nodeId: "ESP32-1", room: "Living Room", state: "strong", intensity: 3.1 },
+    { minutesAgo: 220, nodeId: "ESP32-2", room: "Kitchen", state: "motion", intensity: 2.2 },
+    { minutesAgo: 480, nodeId: "ESP32-3", room: "Bedroom", state: "motion", intensity: 1.6 },
+    { minutesAgo: 720, nodeId: "ESP32-1", room: "Living Room", state: "motion", intensity: 2.0 },
+    { minutesAgo: 1440 + 60, nodeId: "ESP32-2", room: "Kitchen", state: "strong", intensity: 2.7 },
+    { minutesAgo: 1440 + 300, nodeId: "ESP32-4", room: "Bathroom", state: "motion", intensity: 1.8 },
+    { minutesAgo: 1440 * 2 + 90, nodeId: "ESP32-1", room: "Living Room", state: "motion", intensity: 2.3 },
+    { minutesAgo: 1440 * 3 + 200, nodeId: "ESP32-3", room: "Bedroom", state: "motion", intensity: 1.7 },
   ];
 
   return samples.map((s, i) => {
@@ -123,11 +176,11 @@ export function seedMotionLogEvents(now = new Date()): NodeMotionEvent[] {
     return {
       id: `seed-${i}-${s.nodeId}`,
       nodeId: s.nodeId,
-      nodeLabel: `Node ${s.nodeId.slice(1)}`,
+      nodeLabel: s.nodeId,
       room: s.room,
       state: s.state,
       intensity: s.intensity,
-      message: `${s.state === "strong" ? "Strong motion" : "Motion"} detected — ${s.room}`,
+      message: `${s.state === "strong" ? "Strong CSI motion" : "CSI motion"} — ${s.room}`,
       timestamp,
     };
   });
